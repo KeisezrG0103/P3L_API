@@ -19,8 +19,8 @@ class model_promo_poin extends Model
     protected $fillable = [
         'Nama',
         'Poin',
-        'IsDoublePoint',
+        'isDoublePoint',
     ];
 
-    
+
 }
