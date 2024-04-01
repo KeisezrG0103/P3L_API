@@ -15,7 +15,7 @@ class resource_produk extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'Id' => $this->Id,
             'Nama' => $this->Nama,
             'Harga' => $this->Harga,
             'Stok' => $this->Stok,

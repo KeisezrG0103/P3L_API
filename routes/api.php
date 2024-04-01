@@ -27,6 +27,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('promo_poin/{id}', [controller_promo_poin::class, 'getById']);
 
         Route::post('produk' , [controller_produk::class, 'createProduk']);
+        Route::put('produk/{id}', [controller_produk::class, 'updateProduk']);
+        Route::delete('produk/{id}', [controller_produk::class, 'deleteProduk']);
+        Route::get('produk', [controller_produk::class, 'readProduk']);
+        Route::get('produk/{id}', [controller_produk::class, 'getById']);
+         Route::get('produkNama/{nama}', [controller_produk::class, 'getByNama']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
