@@ -6,3 +6,8 @@
 5. Menghapus Promo Poin
 6. Menampilkan Promo Poin
 7. Mencari Promo Poin
+8. Menambah Produk
+9. Mengubah Produk
+10. Menghapus Produk
+11. Menampilkan Produk
+12. Mencari Produk
