@@ -19,11 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(function ($request, $e) {
             return $request->wantsJson() || $request->is('api/*');
         });
-        $exceptions->renderable(function (Throwable $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], 500);
-        });
 
-        
+
+
     })->create();

@@ -21,6 +21,6 @@ class model_produk extends Model
         'Satuan',
         'Stok',
         'Penitip_Id',
-        'Gambar'
+        'Gambar',
     ];
 }
