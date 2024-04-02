@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\controller_auth;
 use App\Http\Controllers\controller_promo_poin;
 use App\Http\Controllers\controller_produk;
+use App\Http\Controllers\controller_hampers;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -31,7 +32,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('produk/{id}', [controller_produk::class, 'deleteProduk']);
         Route::get('produk', [controller_produk::class, 'readProduk']);
         Route::get('produk/{id}', [controller_produk::class, 'getById']);
-         Route::get('produkNama/{nama}', [controller_produk::class, 'getByNama']);
+        Route::get('produkNama/{nama}', [controller_produk::class, 'getByNama']);
+
+        Route::post('hampers', [controller_hampers::class, 'createHampers']);
+        Route::put('hampers/{id}', [controller_hampers::class, 'updateHampers']);
+        Route::delete('hampers/{id}', [controller_hampers::class, 'deleteHampers']);
+        Route::get('hampers', [controller_hampers::class, 'readHampers']);
+        Route::get('hampers/{id}', [controller_hampers::class, 'getById']);
+
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {

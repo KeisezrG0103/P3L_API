@@ -36,7 +36,6 @@ class controller_produk extends Controller
             $produk = model_produk::findOrFail($id);
             $produk->delete();
             $produkResource = new resource_produk($produk);
-            $produkResource->setIsDeleted(true);
             return $produkResource;
         } catch (\Throwable $th) {
             return response()->json([
