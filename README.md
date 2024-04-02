@@ -11,3 +11,8 @@
 10. Menghapus Produk
 11. Menampilkan Produk
 12. Mencari Produk
+13. Menambah Hampers
+14. Mengubah Hampers
+15. Menghapus Hampers
+16. Menampikan Hampers
+17. Mencari Hampers
