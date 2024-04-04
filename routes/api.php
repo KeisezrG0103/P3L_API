@@ -6,6 +6,7 @@ use App\Http\Controllers\controller_auth;
 use App\Http\Controllers\controller_promo_poin;
 use App\Http\Controllers\controller_produk;
 use App\Http\Controllers\controller_hampers;
+use App\Http\Controllers\controller_detail_hampers;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -39,6 +40,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('hampers/{id}', [controller_hampers::class, 'deleteHampers']);
         Route::get('hampers', [controller_hampers::class, 'readHampers']);
         Route::get('hampers/{id}', [controller_hampers::class, 'getById']);
+
+        Route::post('detail_hampers', [controller_detail_hampers::class, 'addProdukToHampers']);
+        Route::delete('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'deleteProdukFromHampers']);
+        Route::put('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'updateProdukFromHampers']);
+        Route::get('detail_hampers/{id_hampers}', [controller_detail_hampers::class, 'getProdukFromHampers']);
+
 
     });
 

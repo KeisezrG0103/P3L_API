@@ -16,3 +16,7 @@
 15. Menghapus Hampers
 16. Menampikan Hampers
 17. Mencari Hampers
+18. Menambah produk dalam Hampers
+19. Menghapus produk dalam Hampers
+20. Menampilkan produk dalam Hampers
+21. Mengupdate Produk dalam Hampers
