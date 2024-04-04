@@ -7,6 +7,7 @@ use App\Http\Controllers\controller_promo_poin;
 use App\Http\Controllers\controller_produk;
 use App\Http\Controllers\controller_hampers;
 use App\Http\Controllers\controller_detail_hampers;
+use App\Http\Controllers\controller_pengadaan_bahan_baku;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -51,6 +52,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['middleware' => ['can:isMO']], function () {
         //fungsi MO kasi sini semua
+
+        Route::post('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'createPengadaanBahanBaku']);
+        Route::put('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'updatePengadaanBahanBaku']);
+        Route::delete('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'deletePengadaanBahanBaku']);
+        Route::get('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBaku']);
+        Route::get('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBakuByID']);
+
+
 
     });
 

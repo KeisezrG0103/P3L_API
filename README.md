@@ -20,3 +20,8 @@
 19. Menghapus produk dalam Hampers
 20. Menampilkan produk dalam Hampers
 21. Mengupdate Produk dalam Hampers
+22. Menambah Pengadaan Bahan Baku
+23. Mengubah Pengadaan Bahan Baku
+24. Menghapus Pengadaan Bahan Baku
+25. Menampilkan Pengadaan Bahan Baku
+26. Mencari Pengadaan Bahan Baku

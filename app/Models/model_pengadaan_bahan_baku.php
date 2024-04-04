@@ -18,7 +18,7 @@ class model_pengadaan_bahan_baku extends Model
         'Satuan',
         'Qty',
         'Harga',
-        'Bahan_Baku_Id',
+        'BahanBaku_Id',
         'Tanggal_Pengadaan',
     ];
 }
