@@ -5,10 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Requests\request_produk;
 use App\Models\model_produk;
 use App\Http\Resources\resource_produk;
+use App\Services\service_produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class controller_produk extends Controller
 {
+
+    private service_produk $service;
+
+    public function __construct(service_produk $service)
+    {
+        $this->service = $service;
+    }
+
     public function createProduk(request_produk $request)
     {
         $validated = $request->validated();
@@ -46,18 +56,18 @@ class controller_produk extends Controller
 
     public function readProduk()
     {
-        $produk = model_produk::all();
+        $produk = $this->service->get_produk();
         return resource_produk::collection($produk);
     }
 
     public function getById(int $id)
     {
         try {
-            $produk = model_produk::findOrFail($id);
-            return new resource_produk($produk);
+            $produk = $this->service->getProdukById($id);
+            return resource_produk::collection($produk);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Produk dengan Id ' . $id . ' tidak ditemukan',
+                'message' => $th->getMessage(),
             ], 404);
         }
     }
@@ -67,5 +77,4 @@ class controller_produk extends Controller
         $produk = model_produk::where('Nama', 'like', '%' . $name . '%')->get();
         return resource_produk::collection($produk);
     }
-
 }

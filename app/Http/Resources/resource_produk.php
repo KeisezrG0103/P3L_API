@@ -12,15 +12,19 @@ class resource_produk extends JsonResource
      *
      * @return array<string, mixed>
      */
+    public function __construct($resource)
+    {
+        parent::__construct($resource);
+    }
     public function toArray(Request $request): array
     {
         return [
             'Id' => $this->Id,
-            'Nama' => $this->Nama,
-            'Harga' => $this->Harga,
-            'Stok' => $this->Stok,
-            'Satuan' => $this->Satuan,
-            'Penitip_Id' => $this->Penitip_Id,
+            'Nama_Produk' => $this->Nama_Produk,
+            'Harga' => $this->Harga_Produk,
+            'Stok' => $this->Stok_Produk,
+            'Kategori' => $this->Kategori,
+            'Penitip' => $this->Penitip,
         ];
     }
 }

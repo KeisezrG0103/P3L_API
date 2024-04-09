@@ -27,7 +27,8 @@ class request_produk extends FormRequest
             'Stok' => 'required',
             'Satuan' => ['required', 'string'],
             'Penitip_Id' => ['string' ,'nullable'],
-            'Gambar' => []
+            'Gambar' => [],
+            'Kategori_Id' => ['required'],
         ];
     }
 
@@ -39,6 +40,7 @@ class request_produk extends FormRequest
             'Satuan.required' => 'Satuan produk harus diisi',
             'Stok.required' => 'Stok produk harus diisi',
             'Penitip_Id.string' => 'Penitip harus berupa string',
+            'Kategori_Id.required' => 'Kategori produk harus diisi',
         ];
     }
 }
