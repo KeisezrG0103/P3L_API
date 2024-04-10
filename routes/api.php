@@ -7,7 +7,9 @@ use App\Http\Controllers\controller_promo_poin;
 use App\Http\Controllers\controller_produk;
 use App\Http\Controllers\controller_hampers;
 use App\Http\Controllers\controller_detail_hampers;
+use App\Http\Controllers\controller_kategori;
 use App\Http\Controllers\controller_pengadaan_bahan_baku;
+use App\Http\Controllers\controller_penitip;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -62,6 +64,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     });
+
+    Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
+    Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
 
     //fungsi customer kasi sini semua
 
