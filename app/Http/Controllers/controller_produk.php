@@ -26,7 +26,7 @@ class controller_produk extends Controller
         return new resource_produk($produk);
     }
 
-    public function updateProduk(request_produk $request, int $id)
+    public function updateProduk(request_produk $request, $id)
     {
         try {
             $produk = model_produk::findOrFail($id);

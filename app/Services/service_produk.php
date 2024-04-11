@@ -22,8 +22,11 @@ class service_produk
             'produk.Harga as Harga_Produk',
             'produk.Satuan as Satuan_Produk',
             'produk.Stok as Stok_Produk',
+            'produk.Satuan as Satuan_Produk',
             'penitip.Nama_Penitip as Penitip',
-            'kategori.Kategori as Kategori'
+            'kategori.Kategori as Kategori',
+            'produk.Kategori_Id as Kategori_Id',
+            'penitip.Id as Penitip_Id',
         )->leftJoin('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
         ->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
         ->get();
@@ -37,8 +40,11 @@ class service_produk
             'produk.Harga as Harga_Produk',
             'produk.Satuan as Satuan_Produk',
             'produk.Stok as Stok_Produk',
+            'produk.Satuan as Satuan_Produk',
             'penitip.Nama_Penitip as Penitip',
-            'kategori.Kategori as Kategori'
+            'kategori.Kategori as Kategori',
+            'produk.Kategori_Id as Kategori_Id',
+            'penitip.Id as Penitip_Id',
         )->leftJoin('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
         ->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
         ->where('produk.Id', '=', $id)

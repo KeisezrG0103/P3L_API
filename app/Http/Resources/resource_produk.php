@@ -25,6 +25,9 @@ class resource_produk extends JsonResource
             'Stok' => $this->Stok_Produk,
             'Kategori' => $this->Kategori,
             'Penitip' => $this->Penitip,
+            'Satuan' => $this->Satuan_Produk,
+            'Kategori_Id' => $this->Kategori_Id,
+            'Penitip_Id' => $this->Penitip_Id,
         ];
     }
 }
