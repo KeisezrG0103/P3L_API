@@ -18,6 +18,7 @@ class resource_hampers extends JsonResource
             'Id' => $this->Id,
             'Nama_Hampers' => $this->Nama_Hampers,
             'Harga' => $this->Harga,
+            'Gambar' => $this->Gambar,
         ];
     }
 }

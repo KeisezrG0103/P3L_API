@@ -17,8 +17,9 @@ class model_hampers extends Model
 
     protected $fillable = [
         'Nama_Hampers',
-        'Harga'
+        'Harga',
+        'Gambar'
     ];
 
-    
+
 }

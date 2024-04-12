@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Models\model_produk;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class service_hampers
 {
@@ -40,7 +41,7 @@ class service_hampers
             ->update($request);
     }
 
-public function getProduct($id) : object
+    public function getProduct($id): object
     {
         $produk = model_produk::join('detail_hampers', 'produk.Id', '=', 'detail_hampers.Produk_Id')
             ->where('Hampers_Id', $id)
@@ -48,4 +49,6 @@ public function getProduct($id) : object
 
         return $produk;
     }
+
+
 }

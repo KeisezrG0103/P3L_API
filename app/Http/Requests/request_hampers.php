@@ -24,6 +24,7 @@ class request_hampers extends FormRequest
         return [
             'Nama_Hampers' => ['required', 'string'],
             'Harga' => ['required', 'numeric'],
+            'Gambar' => ['nullable', 'mimes:png,jpg,jpeg'],
         ];
     }
 
@@ -34,6 +35,8 @@ class request_hampers extends FormRequest
             'Nama_Hampers.string' => 'Nama hampers harus berupa string',
             'Harga.required' => 'Harga harus diisi',
             'Harga.numeric' => 'Harga harus berupa angka',
+            'Gambar.mimes' => 'Gambar harus berupa file dengan ekstensi png, jpg, atau jpeg',
         ];
     }
 }
+
