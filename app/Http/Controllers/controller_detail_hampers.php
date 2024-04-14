@@ -32,6 +32,7 @@ class controller_detail_hampers extends Controller
             $detail_hampers = model_detail_hampers::create([
                 'Produk_Id' => $produk->Id,
                 'Hampers_Id' => $hampers->Id,
+                'Jumlah' => $request_val['Jumlah']
             ]);
 
             return new resource_detail_hampers($produk, $hampers, $detail_hampers);

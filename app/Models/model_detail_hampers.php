@@ -21,6 +21,7 @@ class model_detail_hampers extends Model
     protected $fillable = [
         'Hampers_Id',
         'Produk_Id',
+        'Jumlah'
     ];
 
 }

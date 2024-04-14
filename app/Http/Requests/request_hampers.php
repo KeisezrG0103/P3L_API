@@ -24,7 +24,7 @@ class request_hampers extends FormRequest
         return [
             'Nama_Hampers' => ['required', 'string'],
             'Harga' => ['required', 'numeric'],
-            'Gambar' => ['nullable', 'mimes:png,jpg,jpeg'],
+            'Gambar' => ['nullable'],
         ];
     }
 

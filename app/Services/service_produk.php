@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\model_produk;
 
 class service_produk
 {
@@ -16,7 +17,7 @@ class service_produk
 
     public function get_produk() : object
     {
-        return DB::table('produk')->select(
+        return model_produk::select(
             'produk.Id as Id',
             'produk.Nama as Nama_Produk',
             'produk.Harga as Harga_Produk',
@@ -27,6 +28,7 @@ class service_produk
             'kategori.Kategori as Kategori',
             'produk.Kategori_Id as Kategori_Id',
             'penitip.Id as Penitip_Id',
+            'Gambar as Gambar'
         )->leftJoin('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
         ->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
         ->get();
@@ -34,7 +36,7 @@ class service_produk
 
     public function getProdukById(int $id) : object
     {
-        return DB::table('produk')->select(
+        return model_produk::select(
             'produk.Id as Id',
             'produk.Nama as Nama_Produk',
             'produk.Harga as Harga_Produk',
@@ -45,9 +47,13 @@ class service_produk
             'kategori.Kategori as Kategori',
             'produk.Kategori_Id as Kategori_Id',
             'penitip.Id as Penitip_Id',
+            'Gambar as Gambar',
         )->leftJoin('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
         ->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
         ->where('produk.Id', '=', $id)
         ->get();
     }
+
+
+
 }

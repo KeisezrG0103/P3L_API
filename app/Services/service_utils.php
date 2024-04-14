@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
+use Mockery\Undefined;
 
 class service_utils
 {
@@ -32,7 +33,7 @@ class service_utils
     {
         $hampers_with_image = $data->map(function ($data_Json) use ($key) {
             $image = $this->getImage($key, $data_Json->Gambar);
-            if ($data_Json->Gambar == null) {
+            if ($data_Json->Gambar == null || $data_Json->Gambar == "undefined") {
                 $image = url(Storage::url('defaultimage.webp'));
             } else {
                 $image = url($image);
@@ -55,5 +56,11 @@ class service_utils
         $data->Gambar = $image;
         return $data;
     }
+
+    public function getDefaultImageUrl()
+    {
+        return url(Storage::url('defaultimage.webp'));
+    }
+
 
 }

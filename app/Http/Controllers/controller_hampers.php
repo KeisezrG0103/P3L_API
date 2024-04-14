@@ -33,7 +33,15 @@ class controller_hampers extends Controller
         try {
             $hampers = model_hampers::findOrFail($id);
             $hampersData = $request_hampers->validated();
+            if ($request_hampers->hasFile('Gambar')) {
+                if ($hampers->Gambar != null) {
+                    $this->service_utils->deleteImage('hampers', $hampers->Gambar);
+                }
+                $hampersData = $this->service_utils->saveImage($hampersData, 'hampers');
+            }
+
             $hampers->update($hampersData);
+
             return new resource_hampers($hampers);
         } catch (\Throwable $th) {
             return response()->json([

@@ -26,9 +26,9 @@ class request_produk extends FormRequest
             'Harga' => 'required',
             'Stok' => 'required',
             'Satuan' => ['required', 'string'],
-            'Penitip_Id' => ['string' ,'nullable'],
-            'Gambar' => [],
             'Kategori_Id' => ['required'],
+            'Penitip_Id' => ['string' ,'nullable'],
+            'Gambar' => ['nullable'],
         ];
     }
 

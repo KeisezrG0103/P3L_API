@@ -18,16 +18,6 @@ class resource_produk extends JsonResource
     }
     public function toArray(Request $request): array
     {
-        return [
-            'Id' => $this->Id,
-            'Nama_Produk' => $this->Nama_Produk,
-            'Harga' => $this->Harga_Produk,
-            'Stok' => $this->Stok_Produk,
-            'Kategori' => $this->Kategori,
-            'Penitip' => $this->Penitip,
-            'Satuan' => $this->Satuan_Produk,
-            'Kategori_Id' => $this->Kategori_Id,
-            'Penitip_Id' => $this->Penitip_Id,
-        ];
+        return parent::toArray($request);
     }
 }

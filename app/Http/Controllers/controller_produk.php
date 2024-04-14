@@ -8,20 +8,29 @@ use App\Http\Resources\resource_produk;
 use App\Services\service_produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\service_utils;
 
 class controller_produk extends Controller
 {
 
     private service_produk $service;
+    private service_utils $service_utils;
 
-    public function __construct(service_produk $service)
+
+    public function __construct(service_produk $service, service_utils $service_utils)
     {
         $this->service = $service;
+        $this->service_utils = $service_utils;
     }
 
     public function createProduk(request_produk $request)
     {
         $validated = $request->validated();
+
+        if ($request->hasFile('Gambar')) {
+            $validated = $this->service_utils->saveImage($validated, 'produk');
+        }
+
         $produk = model_produk::create($validated);
         return new resource_produk($produk);
     }
@@ -31,6 +40,15 @@ class controller_produk extends Controller
         try {
             $produk = model_produk::findOrFail($id);
             $validated = $request->validated();
+
+            if ($request->hasFile('Gambar')) {
+                if ($produk->Gambar != null) {
+                    $this->service_utils->deleteImage('produk', $produk->Gambar);
+                }
+                $validated = $this->service_utils->saveImage($validated, 'produk');
+            }
+
+
             $produk->update($validated);
             return new resource_produk($produk);
         } catch (\Throwable $th) {
@@ -44,6 +62,10 @@ class controller_produk extends Controller
     {
         try {
             $produk = model_produk::findOrFail($id);
+
+            if ($produk->Gambar != null) {
+                $this->service_utils->deleteImage('produk', $produk->Gambar);
+            }
             $produk->delete();
             $produkResource = new resource_produk($produk);
             return $produkResource;
@@ -57,14 +79,21 @@ class controller_produk extends Controller
     public function readProduk()
     {
         $produk = $this->service->get_produk();
-        return resource_produk::collection($produk);
+
+        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
+
+
+
+        return resource_produk::collection($produk_with_image);
     }
 
     public function getById(int $id)
     {
         try {
             $produk = $this->service->getProdukById($id);
-            return resource_produk::collection($produk);
+            // $produk_with_image = $this->service_utils->getSingleImageUrl($produk, 'produk');
+            $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
+            return new resource_produk($produk_with_image);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
@@ -75,6 +104,6 @@ class controller_produk extends Controller
     public function getByNama(string $name)
     {
         $produk = model_produk::where('Nama', 'like', '%' . $name . '%')->get();
-        return resource_produk::collection($produk);
+        return new resource_produk($produk);
     }
 }
