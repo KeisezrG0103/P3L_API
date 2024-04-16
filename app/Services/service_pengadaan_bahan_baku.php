@@ -14,7 +14,8 @@ class service_pengadaan_bahan_baku
             'pengadaan_bahan_baku.Qty',
             'pengadaan_bahan_baku.Harga',
             'bahan_baku.Nama as BahanBaku_Nama',
-            'pengadaan_bahan_baku.Tanggal_Pengadaan'
+            'pengadaan_bahan_baku.Tanggal_Pengadaan',
+            'bahan_baku.Id as BahanBaku_Id'
         )->join('bahan_baku', 'bahan_baku.Id', '=', 'pengadaan_bahan_baku.BahanBaku_Id')->get();
 
         return $pengadaan_bahan_baku;
@@ -28,7 +29,8 @@ class service_pengadaan_bahan_baku
             'pengadaan_bahan_baku.Qty',
             'pengadaan_bahan_baku.Harga',
             'bahan_baku.Nama as BahanBaku_Nama',
-            'pengadaan_bahan_baku.Tanggal_Pengadaan'
+            'pengadaan_bahan_baku.Tanggal_Pengadaan',
+            'bahan_baku.Id as BahanBaku_Id'
         )->join('bahan_baku', 'bahan_baku.Id', '=', 'pengadaan_bahan_baku.BahanBaku_Id')->where('pengadaan_bahan_baku.Id', $id)->get();
 
         return $pengadaan_bahan_baku;

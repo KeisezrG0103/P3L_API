@@ -35,6 +35,10 @@ class AppServiceProvider extends ServiceProvider
             return $user->Role_Id == model_role::where('Nama', 'Owner')->first()->Id;
         });
 
+        Gate::define("isMOorAdmin", function (model_karyawan $user) {
+            return $user->Role_Id == model_role::where('Nama', 'MO')->first()->Id || $user->Role_Id == model_role::where('Nama', 'Admin')->first()->Id;
+        });
+
 
     }
 }

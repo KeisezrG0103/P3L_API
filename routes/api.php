@@ -10,12 +10,13 @@ use App\Http\Controllers\controller_detail_hampers;
 use App\Http\Controllers\controller_kategori;
 use App\Http\Controllers\controller_pengadaan_bahan_baku;
 use App\Http\Controllers\controller_penitip;
+use App\Http\Controllers\controller_bahan_baku;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
 Route::post('logout', [controller_auth::class, 'logout'])->middleware('auth:sanctum');
 
-
+Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
@@ -31,7 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('promo_poin', [controller_promo_poin::class, 'readPromo']);
         Route::get('promo_poin/{id}', [controller_promo_poin::class, 'getById']);
 
-        Route::post('produk' , [controller_produk::class, 'createProduk']);
+        Route::post('produk', [controller_produk::class, 'createProduk']);
         Route::put('produk/{id}', [controller_produk::class, 'updateProduk']);
         Route::delete('produk/{id}', [controller_produk::class, 'deleteProduk']);
         Route::get('produk', [controller_produk::class, 'readProduk']);
@@ -48,8 +49,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'deleteProdukFromHampers']);
         Route::put('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'updateProdukFromHampers']);
         Route::get('detail_hampers/{id_hampers}', [controller_detail_hampers::class, 'getProdukFromHampers']);
-
-
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
@@ -60,10 +59,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'deletePengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBakuByID']);
-
-
-
     });
+
+    Route::group(['middleware' => ['can:isMOorAdmin']], function () {
+        Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
+    });
+
 
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
     Route::get('kategori', [controller_kategori::class, 'ReadKategori']);

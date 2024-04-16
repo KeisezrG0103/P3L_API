@@ -26,9 +26,29 @@ class controller_auth extends Controller
         return new resource_register($user);
     }
 
+    public function register_karyawan(Request $request)
+    {
+        $request->validate([
+            'Role_Id' => 'required',
+            'Password' => 'required',
+            'Nama' => 'required|string|max:255'
+        ]);
+
+        $registerData = $request->all();
+        $registerData['Password'] = Hash::make($registerData['Password']);
+
+        $user = model_karyawan::create($registerData);
+
+        return response()->json([
+            'message' => 'Karyawan berhasil didaftarkan',
+            'data' => $user
+        ]);
+    }
+
+
     public function login(Request $request, service_auth $service_auth)
     {
-        if($service_auth->isCustomer($request)){
+        if ($service_auth->isCustomer($request)) {
             return $service_auth->login_customer($request);
         } else {
             return $service_auth->login_karyawan($request);
