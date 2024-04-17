@@ -91,7 +91,4 @@ class controller_bahan_baku extends Controller
         return new resource_bahan_baku($bahanBaku);
     }
     
-
-
-
 }

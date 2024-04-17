@@ -11,6 +11,7 @@ use App\Http\Controllers\controller_kategori;
 use App\Http\Controllers\controller_pengadaan_bahan_baku;
 use App\Http\Controllers\controller_penitip;
 use App\Http\Controllers\controller_bahan_baku;
+use App\Http\Controllers\controller_pengeluaran;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -64,6 +65,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('penitip', [controller_penitip::class, 'readPenitip']);
         Route::get('penitip/{id_penitip}', [controller_penitip::class, 'getById']);
         Route::get('penitip_nama/{nama}', [controller_penitip::class, 'getByNama']);
+
+        Route::post('pengeluaran', [controller_pengeluaran::class, 'createPengeluaran']);
+        Route::delete('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'deletePengeluaran']);
+        Route::put('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'updatePengeluaran']);
+        Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
+        Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
+        Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
