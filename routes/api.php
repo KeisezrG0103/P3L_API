@@ -49,6 +49,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'deleteProdukFromHampers']);
         Route::put('detail_hampers/{id_hampers}/{id_produk}', [controller_detail_hampers::class, 'updateProdukFromHampers']);
         Route::get('detail_hampers/{id_hampers}', [controller_detail_hampers::class, 'getProdukFromHampers']);
+
+        Route::post('bahan_baku', [controller_bahan_baku::class, 'createBahanBaku']);
+        Route::delete('bahan_baku/{id_bahan_baku}', [controller_bahan_baku::class, 'deleteBahanBaku']);
+        Route::put('bahan_baku/{id_bahan_baku}', [controller_bahan_baku::class, 'updateBahanBaku']);
+        Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
+        Route::get('bahan_baku/{id_bahan_baku}', [controller_bahan_baku::class, 'getById']);
+        Route::get('bahan_baku_nama/{nama}', [controller_bahan_baku::class, 'getByNama']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
