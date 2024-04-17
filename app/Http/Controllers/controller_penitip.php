@@ -23,7 +23,7 @@ class controller_penitip extends Controller
         $newId = $this->penitipService->generateId();
 
        
-        $penitipData = array_merge($request->validated(), ['Id' => $newId, 'Komisi' => 0]);
+        $penitipData = array_merge($request->validated(), ['Id' => $newId, 'komisi' => 0]);
 
     
         $penitip = model_penitip::create($penitipData);

@@ -20,6 +20,6 @@ class model_penitip extends Model
     protected $fillable = [
         'Id',
         'Nama_Penitip',
-        'Komisi'
+        'komisi'
     ];
 }
