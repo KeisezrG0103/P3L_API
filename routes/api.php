@@ -56,6 +56,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
         Route::get('bahan_baku/{id_bahan_baku}', [controller_bahan_baku::class, 'getById']);
         Route::get('bahan_baku_nama/{nama}', [controller_bahan_baku::class, 'getByNama']);
+
+
+        Route::post('penitip', [controller_penitip::class, 'createPenitip']);
+        Route::delete('penitip/{id_penitip}', [controller_penitip::class, 'deletePenitip']);
+        Route::put('penitip/{id_penitip}', [controller_penitip::class, 'updatePenitip']);
+        Route::get('penitip', [controller_penitip::class, 'readPenitip']);
+        Route::get('penitip/{id_penitip}', [controller_penitip::class, 'getById']);
+        Route::get('penitip_nama/{nama}', [controller_penitip::class, 'getByNama']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
