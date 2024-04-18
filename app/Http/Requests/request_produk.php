@@ -22,25 +22,27 @@ class request_produk extends FormRequest
     public function rules(): array
     {
         return [
-            'Nama' => ['required', 'string'],
-            'Harga' => 'required',
-            'Stok' => 'required',
-            'Satuan' => ['required', 'string'],
-            'Kategori_Id' => ['required'],
-            'Penitip_Id' => ['string' ,'nullable'],
-            'Gambar' => ['nullable'],
+            "Nama" => ["required", "string"],
+            "Harga" => ["required", "min:0"],
+            "Stok" => ["required", "min:0"],
+            "Satuan" => ["required", "string"],
+            "Kategori_Id" => ["required"],
+            "Penitip_Id" => ["string", "nullable"],
+            "Gambar" => ["nullable"],
         ];
     }
-
+    
     public function messages(): array
     {
         return [
-            'Nama.required' => 'Nama produk harus diisi',
-            'Harga.required' => 'Harga produk harus diisi',
-            'Satuan.required' => 'Satuan produk harus diisi',
-            'Stok.required' => 'Stok produk harus diisi',
-            'Penitip_Id.string' => 'Penitip harus berupa string',
-            'Kategori_Id.required' => 'Kategori produk harus diisi',
+            "Nama.required" => "Nama produk harus diisi",
+            "Harga.required" => "Harga produk harus diisi",
+            "Harga.min" => "Harga produk tidak boleh negatif",
+            "Satuan.required" => "Satuan produk harus diisi",
+            "Satuan.min" => "Satuan produk tidak boleh negatif",
+            "Stok.required" => "Stok produk harus diisi",
+            "Penitip_Id.string" => "Penitip harus berupa string",
+            "Kategori_Id.required" => "Kategori produk harus diisi",
         ];
     }
 }

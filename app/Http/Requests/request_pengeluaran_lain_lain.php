@@ -24,8 +24,8 @@ class request_pengeluaran_lain_lain extends FormRequest
     {
         return [
             "Nama_Pengeluaran" => ["required", "string"],
-            "Harga" => ["required", "numeric"],
-            "Qty" => ["required", "numeric"],
+            "Harga" => ["required", "numeric", "min:0"],
+            "Qty" => ["required", "numeric", "min:0"],
             "Satuan" => ["required", "string"],
         ];
     }
@@ -36,9 +36,11 @@ class request_pengeluaran_lain_lain extends FormRequest
             "Nama_Pengeluaran.required" => "Nama tidak boleh kosong",
             "Harga.required" => "Harga tidak boleh kosong",
             "Qty.required" => "Qty tidak boleh kosong",
+            "Qty.min" => "Qty tidak boleh negatif",
             "Satuan.required" => "Satuan tidak boleh kosong",
             "Nama_Pengeluaran.string" => "Nama harus berupa string",
             "Harga.numeric" => "Harga harus berupa angka",
+            "Harga.min" => "Harga tidak boleh negatif",
             "Qty.numeric" => "Qty harus berupa angka",
             "Satuan.string" => "Satuan harus berupa string",
         ];

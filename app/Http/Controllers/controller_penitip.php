@@ -78,7 +78,7 @@ class controller_penitip extends Controller
 
     public function getById(string $id)
     {
-        $penitip = model_penitip::where('Id', $id)->first();
+        $penitip = model_penitip::where('email', $id)->first();
         
         if (!$penitip) {
             return response()->json([
