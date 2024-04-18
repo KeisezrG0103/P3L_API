@@ -23,7 +23,7 @@ class request_hampers extends FormRequest
     {
         return [
             'Nama_Hampers' => ['required', 'string'],
-            'Harga' => ['required', 'numeric', 'min:0'],
+            'Harga' => ['required', 'numeric', 'min:0', 'gte:0'],
             'Gambar' => ['nullable'],
         ];
     }
@@ -37,6 +37,7 @@ class request_hampers extends FormRequest
             'Harga.numeric' => 'Harga harus berupa angka',
             'Harga.min' => 'Harga tidak boleh negatif',
             'Gambar.mimes' => 'Gambar harus berupa file dengan ekstensi png, jpg, atau jpeg',
+            'Harga.gte' => 'Harga tidak boleh negatif',
         ];
     }
 }

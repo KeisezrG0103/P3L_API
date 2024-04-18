@@ -24,7 +24,7 @@ class request_detail_hampers extends FormRequest
         return [
             "Produk_Id" => "required",
             "Hampers_Id" => "required",
-            "Jumlah" => "required|numeric|min:0",
+            "Jumlah" => "required|numeric|min:0|gte:0",
         ];
     }
 
@@ -35,6 +35,7 @@ class request_detail_hampers extends FormRequest
             "Hampers_Id.required" => "Hampers Id tidak boleh kosong",
             "Jumlah.required" => "Jumlah tidak boleh kosong",
             "Jumlah.min" => "Jumlah tidak boleh negatif",
+            "Jumlah.gte" => "Jumlah tidak boleh negatif",
         ];
     }
 }

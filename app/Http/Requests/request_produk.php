@@ -23,15 +23,15 @@ class request_produk extends FormRequest
     {
         return [
             "Nama" => ["required", "string"],
-            "Harga" => ["required", "min:0"],
-            "Stok" => ["required", "min:0"],
+            "Harga" => ["required", "min:0", "gte:0"],
+            "Stok" => ["required", "min:0", "gte:0"],
             "Satuan" => ["required", "string"],
             "Kategori_Id" => ["required"],
             "Penitip_Id" => ["string", "nullable"],
             "Gambar" => ["nullable"],
         ];
     }
-    
+
     public function messages(): array
     {
         return [
@@ -43,6 +43,8 @@ class request_produk extends FormRequest
             "Stok.required" => "Stok produk harus diisi",
             "Penitip_Id.string" => "Penitip harus berupa string",
             "Kategori_Id.required" => "Kategori produk harus diisi",
+            "Stok.gte" => "Stok produk tidak boleh negatif",
+            "Harga.gte" => "Harga produk tidak boleh negatif",
         ];
     }
 }

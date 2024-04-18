@@ -19,13 +19,13 @@ class request_pengeluaran_lain_lain extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-   
+
      public function rules(): array
     {
         return [
             "Nama_Pengeluaran" => ["required", "string"],
-            "Harga" => ["required", "numeric", "min:0"],
-            "Qty" => ["required", "numeric", "min:0"],
+            "Harga" => ["required", "numeric", "min:0", "gte:0"],
+            "Qty" => ["required", "numeric", "min:0", "gte:0"],
             "Satuan" => ["required", "string"],
         ];
     }
@@ -43,6 +43,8 @@ class request_pengeluaran_lain_lain extends FormRequest
             "Harga.min" => "Harga tidak boleh negatif",
             "Qty.numeric" => "Qty harus berupa angka",
             "Satuan.string" => "Satuan harus berupa string",
+            "Qty.gte" => "Qty tidak boleh negatif",
+            "Harga.gte" => "Harga tidak boleh negatif",
         ];
 
     }

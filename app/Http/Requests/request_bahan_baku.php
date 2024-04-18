@@ -23,7 +23,7 @@ class request_bahan_baku extends FormRequest
     {
         return [
             "Nama" => ["required", "string"],
-            "Qty" => ["required", "numeric","min:0"],
+            "Qty" => ["required", "numeric","min:0","gte:0"],
             "Satuan" => ["required", "string"],
         ];
     }
@@ -38,6 +38,7 @@ class request_bahan_baku extends FormRequest
             "Nama.string" => "Nama harus berupa string",
             "Qty.numeric" => "Stok harus berupa angka",
             "Satuan.string" => "Satuan harus berupa string",
+            "Qty.gte" => "Stok tidak boleh negatif",
         ];
 
     }
