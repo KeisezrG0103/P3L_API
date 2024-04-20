@@ -66,9 +66,6 @@ class controller_penitip extends Controller
                 'message' => 'Penitip dengan Id ' . $id . ' berhasil dihapus.',
             ]);
 
-            $penitipResource = new resource_penitip($penitip);
-            
-            return $penitipResource;
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Penitip dengan Id ' . $id . ' tidak ditemukan',
