@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\controller_customer;
+use App\Http\Controllers\controller_pesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\controller_auth;
@@ -77,6 +78,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('customer', [controller_customer::class, 'readCustomer']);
         Route::get('customer/{id_pengeluaran}', [controller_customer::class, 'getById']);
         Route::get('customer_nama/{nama}', [controller_customer::class, 'getByNama']);
+
+        Route::get('pesanan', [controller_pesanan::class, 'readPesanan']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
