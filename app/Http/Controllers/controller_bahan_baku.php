@@ -52,9 +52,7 @@ class controller_bahan_baku extends Controller
                 'message' => 'Bahan Baku dengan Id ' . $id . ' berhasil dihapus.',
             ]);
 
-            $bahanBakuResource = new resource_bahan_baku($bahanBaku);
-            
-            return $bahanBakuResource;
+
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Bahan Baku dengan Id ' . $id . ' tidak ditemukan',
