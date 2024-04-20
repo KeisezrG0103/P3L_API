@@ -13,6 +13,7 @@ use App\Http\Controllers\controller_pengadaan_bahan_baku;
 use App\Http\Controllers\controller_penitip;
 use App\Http\Controllers\controller_bahan_baku;
 use App\Http\Controllers\controller_pengeluaran;
+use App\Http\Controllers\controller_presensi;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -87,6 +88,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'deletePengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBakuByID']);
+
+
+        Route::get('presensi', [controller_presensi::class, 'ReadAllPresensi']);
+        Route::get('presensi/{date}', [controller_presensi::class, 'ReadByDate']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
