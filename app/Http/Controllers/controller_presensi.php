@@ -26,4 +26,9 @@ class controller_presensi extends Controller
         $data = $this->service_presensi->GetPresensiByDate($date);
         return resource_presensi::collection($data);
     }
+
+    public function ChangeStatusToTidakHadir(int $id){
+        $this->service_presensi->ChangeStatusToTidakHadir($id);
+        return new resource_presensi(model_presensi::find($id));
+    }
 }

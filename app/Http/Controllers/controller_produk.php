@@ -9,6 +9,8 @@ use App\Services\service_produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\service_utils;
+use App\Services\services_Katalog_Produk;
+use PhpParser\Node\Expr\Cast\String_;
 
 class controller_produk extends Controller
 {
@@ -16,11 +18,14 @@ class controller_produk extends Controller
     private service_produk $service;
     private service_utils $service_utils;
 
+    private services_Katalog_Produk $service_katalog_produk;
 
-    public function __construct(service_produk $service, service_utils $service_utils)
+
+    public function __construct(service_produk $service, service_utils $service_utils, services_Katalog_Produk $service_katalog_produk)
     {
         $this->service = $service;
         $this->service_utils = $service_utils;
+        $this->service_katalog_produk = $service_katalog_produk;
     }
 
     public function createProduk(request_produk $request)
@@ -105,5 +110,21 @@ class controller_produk extends Controller
     {
         $produk = model_produk::where('Nama', 'like', '%' . $name . '%')->get();
         return new resource_produk($produk);
+    }
+
+
+    public function getProdukNonPenitipWithKuota(String $date)
+    {
+        $produk = $this->service_katalog_produk->getProdukWithKuota($date);
+        $produkWithImage = $this->service_utils->transformJsonWithImage($produk, 'produk');
+        return resource_produk::collection($produkWithImage);
+    }
+
+
+    public function getProdukWithPenitip()
+    {
+        $produk = $this->service->getProdukWithPenitip();
+        $produkWithImage = $this->service_utils->transformJsonWithImage($produk, 'produk');
+        return resource_produk::collection($produkWithImage);
     }
 }
