@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\controller_customer;
 use App\Http\Controllers\controller_pesanan;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\controller_auth;
 use App\Http\Controllers\controller_promo_poin;
@@ -15,6 +14,7 @@ use App\Http\Controllers\controller_penitip;
 use App\Http\Controllers\controller_bahan_baku;
 use App\Http\Controllers\controller_pengeluaran;
 use App\Http\Controllers\controller_presensi;
+use App\Http\Controllers\controller_transaksi_pesanan;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -25,11 +25,10 @@ Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['middleware' => ['can:isOwner']], function () {
-        //fungsi Owner kasi sini semua
     });
 
     Route::group(['middleware' => ['can:isAdmin']], function () {
-        //fungsi Admin kasi sini semua
+
         Route::post('promo_poin', [controller_promo_poin::class, 'createPromoPoin']);
         Route::put('promo_poin/{id}', [controller_promo_poin::class, 'updatePromoPoin']);
         Route::delete('promo_poin/{id}', [controller_promo_poin::class, 'deletePromoPoin']);
@@ -85,7 +84,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
-        //fungsi MO kasi sini semua
 
         Route::post('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'createPengadaanBahanBaku']);
         Route::put('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'updatePengadaanBahanBaku']);
@@ -96,6 +94,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         Route::get('presensi', [controller_presensi::class, 'ReadAllPresensi']);
         Route::get('presensi/{date}', [controller_presensi::class, 'ReadByDate']);
+        Route::put('presensi/{id}', [controller_presensi::class, 'ChangeStatusToTidakHadir']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -104,8 +103,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
-    Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
+
 
     //fungsi customer kasi sini semua
 
 });
+
+// transaksi no 72
+Route::get('produkNonPenitipWithKuota/{date}', [controller_produk::class, 'getProdukNonPenitipWithKuota']);
+
+Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
+
+Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);
+Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
