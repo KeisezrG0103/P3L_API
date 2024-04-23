@@ -14,11 +14,17 @@ class controller_pesanan extends Controller
         $this->service = $service;
     }
 
-    public function readPesanan()
+    public function getHistoryByEmail(string $id)
     {
-        $pesanan = $this->service->readPesanan();
+        $pesanan = $this->service->readHistoryByEmail($id);
 
-        return new resource_pesanan($pesanan);
+        return  resource_pesanan::collection($pesanan);
+    }
+
+    public function getAllHistoryPesanan()
+    {
+        $pesanan = $this->service->getAllHistoryPesanan();
+        return  resource_pesanan::collection($pesanan);
     }
 
 }

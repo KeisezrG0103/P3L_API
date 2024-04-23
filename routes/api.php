@@ -80,7 +80,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('customer/{id_pengeluaran}', [controller_customer::class, 'getById']);
         Route::get('customer_nama/{nama}', [controller_customer::class, 'getByNama']);
 
-        Route::get('pesanan', [controller_pesanan::class, 'readPesanan']);
+        Route::get('history/{email}', [controller_pesanan::class, 'getHistoryByEmail']);
+        Route::get('history', [controller_pesanan::class, 'getAllHistoryPesanan']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
