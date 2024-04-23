@@ -121,10 +121,10 @@ class controller_produk extends Controller
     }
 
 
-    public function getProdukWithPenitip()
+    public function getProdukPenitip()
     {
-        $produk = $this->service->getProdukWithPenitip();
-        $produkWithImage = $this->service_utils->transformJsonWithImage($produk, 'produk');
-        return resource_produk::collection($produkWithImage);
+        $produk = $this->service->getProdukPenitip();
+        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
+        return resource_produk::collection($produk_with_image);
     }
 }

@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
-    Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
+
 
     //fungsi customer kasi sini semua
 
@@ -110,6 +110,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 // transaksi no 72
 Route::get('produkNonPenitipWithKuota/{date}', [controller_produk::class, 'getProdukNonPenitipWithKuota']);
-Route::get('produkWithPenitip', [controller_produk::class, 'getProdukWithPenitip']);
+
+Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
 
 Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);
+Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
