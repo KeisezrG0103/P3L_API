@@ -11,7 +11,11 @@ use App\Http\Controllers\controller_kategori;
 use App\Http\Controllers\controller_pengadaan_bahan_baku;
 use App\Http\Controllers\controller_penitip;
 use App\Http\Controllers\controller_bahan_baku;
+use App\Http\Controllers\controller_karyawan;
 use App\Http\Controllers\controller_pengeluaran;
+use App\Http\Controllers\controller_presensi;
+use App\Http\Controllers\controller_resep;
+use App\Http\Controllers\controller_customer;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -23,6 +27,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['middleware' => ['can:isOwner']], function () {
         //fungsi Owner kasi sini semua
+        Route::put('Karyawan/{id}', [controller_karyawan::class, 'updateGaji']);
     });
 
     Route::group(['middleware' => ['can:isAdmin']], function () {
@@ -72,6 +77,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
         Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
         Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
+
+        Route::post('resep', [controller_resep::class, 'createresep']);
+        Route::delete('resep/{id_resep}', [controller_resep::class, 'deleteresep']);
+        Route::put('resep/{id_resep}', [controller_resep::class, 'updateresep']);
+        Route::get('resep', [controller_resep::class, 'readresep']);
+        Route::get('resep/{id_resep}', [controller_resep::class, 'getById']);
+        Route::get('resep_nama/{nama}', [controller_resep::class, 'getDetail']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
@@ -82,6 +94,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'deletePengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBaku']);
         Route::get('pengadaan_bahan_baku/{id}', [controller_pengadaan_bahan_baku::class, 'readPengadaanBahanBakuByID']);
+
+        Route::put('presensi/{id_karyawan}', [controller_presensi::class, 'updatePresensi']);
+        Route::get('presensi/{id_karyawan}', [controller_presensi::class, 'getById']);
+        Route::get('presensi/{nama}', [controller_presensi::class, 'getByNama']);
+        
+        Route::post('karyawan', [controller_karyawan::class, 'createkaryawan']);
+        Route::delete('karyawan/{id_karyawan}', [controller_karyawan::class, 'deletekaryawan']);
+        Route::put('karyawan/{id_karyawan}', [controller_karyawan::class, 'updatekaryawan']);
+        Route::get('karyawan', [controller_karyawan::class, 'readkaryawan']);
+        Route::get('karyawan/{id_karyawan}', [controller_karyawan::class, 'getById']);
+        Route::get('karyawan_nama/{nama}', [controller_karyawan::class, 'getByNama']);
+
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -93,5 +117,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
 
     //fungsi customer kasi sini semua
+
+        Route::post('customer', [controller_customer::class, 'createcustomer']);
+        Route::delete('customer/{id_customer}', [controller_customer::class, 'deletecustomer']);
+        Route::put('customer/{id_customer}', [controller_customer::class, 'updatecustomer']);
+        Route::get('customer', [controller_customer::class, 'readcustomer']);
+        Route::get('customer/{id_customer}', [controller_customer::class, 'getById']);
+        Route::get('customer_nama/{nama}', [controller_customer::class, 'getByNama']);
 
 });

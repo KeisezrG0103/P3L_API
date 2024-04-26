@@ -71,4 +71,31 @@ class controller_auth extends Controller
             "message" => "coba"
         ]);
     }
+
+    public function updatePassword()
+    {
+        try {
+            $karyawan = model_karyawan::findOrFail($id);
+
+            $validated = Validator::make($request, [
+                'current_password' => 'required',
+                'new_password' => 'required|string|min:8|confirmed',
+            ]);
+
+            if (!Hash::check($request->current_password, $karyawan->password)) {
+                return response()->json(['error' => 'Current password is incorrect'], 401);
+            }
+    
+            // Update the user's password
+            $karyawan->password = Hash::make($request->new_password);
+            $karyawan->save();
+
+            $karyawan->update($validated);
+            return new resource_karyawan($karyawan);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'karyawan dengan Id ' . $id . ' tidak ditemukan',
+            ], 404);
+        }
+    }
 }
