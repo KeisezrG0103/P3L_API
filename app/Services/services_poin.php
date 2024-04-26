@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-class services_transaksi
+class services_poin
 {
 
 }
