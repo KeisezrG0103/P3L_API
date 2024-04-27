@@ -125,6 +125,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 // transaksi no 72
 Route::get('produkNonPenitipWithKuota/{date}', [controller_produk::class, 'getProdukNonPenitipWithKuota']);
 
+Route::get('produkKuota/{id}/{date}', [controller_produk::class, 'getProdukKuota']);
+
 Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
 
 Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);

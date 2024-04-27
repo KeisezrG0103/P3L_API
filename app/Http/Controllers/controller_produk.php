@@ -115,7 +115,7 @@ class controller_produk extends Controller
 
     public function getProdukNonPenitipWithKuota(String $date)
     {
-        $produk = $this->service_katalog_produk->getProdukWithKuota($date);
+        $produk = $this->service_katalog_produk->getProdukWithKuotaNoBoxAndCard($date);
         $produkWithImage = $this->service_utils->transformJsonWithImage($produk, 'produk');
         return resource_produk::collection($produkWithImage);
     }
@@ -126,5 +126,22 @@ class controller_produk extends Controller
         $produk = $this->service->getProdukPenitip();
         $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
         return resource_produk::collection($produk_with_image);
+    }
+
+
+    public function getProdukKuota(int $id, String $date)
+    {
+        try {
+
+            $produk = $this->service_katalog_produk->GetKuotaProduk($date, $id);
+
+            return response()->json([
+                'Kuota' => $produk,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+            ], 404);
+        }
     }
 }
