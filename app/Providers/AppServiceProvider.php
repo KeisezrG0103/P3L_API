@@ -15,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
     }
 
     /**
@@ -39,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
             return $user->Role_Id == model_role::where('Nama', 'MO')->first()->Id || $user->Role_Id == model_role::where('Nama', 'Admin')->first()->Id;
         });
 
-
+        $this->publishes([
+            __DIR__ . '/../public' => public_path('vendor/courier'),
+        ], 'public');
     }
 }
