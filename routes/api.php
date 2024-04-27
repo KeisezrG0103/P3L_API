@@ -20,6 +20,19 @@ Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
 Route::post('logout', [controller_auth::class, 'logout'])->middleware('auth:sanctum');
 
+Route::post(
+    '/forgot-password', 
+    [App\Http\Controllers\ForgotPasswordController::class, 'forgotPassword']
+);
+Route::post(
+    '/verify/pin', 
+    [App\Http\Controllers\ForgotPasswordController::class, 'verifyPin']
+);
+Route::post(
+    '/reset-password', 
+    [App\Http\Controllers\ResetPasswordController::class, 'resetPassword']
+);
+
 Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
