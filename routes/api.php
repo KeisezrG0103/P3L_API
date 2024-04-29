@@ -17,6 +17,7 @@ use App\Http\Controllers\controller_bahan_baku;
 use App\Http\Controllers\controller_pengeluaran;
 use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
+use App\Http\Controllers\controller_resep;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -101,7 +102,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
         Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
         Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
-
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -125,3 +125,9 @@ Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
 
 Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);
 Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
+
+Route::post('generate_resep', [controller_resep::class, 'generateResepAllProduk']);
+
+Route::get('getHampersWithProdukAndKuota/{date}', [controller_hampers::class, 'getHamperandProdukwithKuota']);
+
+Route::get('getProdukInHampersWithKuota/{id}/{date}', [controller_produk::class, 'getHampersProdukAndKuota']);

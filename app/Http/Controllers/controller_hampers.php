@@ -6,15 +6,19 @@ use App\Http\Requests\request_hampers;
 use App\Models\model_hampers;
 use App\Http\Resources\resource_hampers;
 use App\Services\service_utils;
+use App\Services\services_Katalog_Produk;
 
 class controller_hampers extends Controller
 {
     public service_utils $service_utils;
+    public services_Katalog_Produk $service_katalog_produk;
 
-    public function __construct(service_utils $service_utils)
+    public function __construct(service_utils $service_utils, services_Katalog_Produk $service_katalog_produk)
     {
         $this->service_utils = $service_utils;
+        $this->service_katalog_produk = $service_katalog_produk;
     }
+
 
 
     public function createHampers(request_hampers $request)
@@ -97,6 +101,20 @@ class controller_hampers extends Controller
         }
     }
 
+    public function getHamperandProdukwithKuota(String $date)
+    {
+        $produk = $this->service_katalog_produk->getHampersWithProdukAndKuota($date);
+        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'hampers');
 
+        // Convert the transformed collection to a collection of `resource_hampers` instances
+        $resourceCollection = resource_hampers::collection($produk_with_image);
 
+        // Iterate through the collection and set the `forCustomer` flag for each instance
+        $resourceCollection->each(function ($resource) {
+            $resource->forCustomer = true;
+        });
+
+        // Return the modified collection
+        return $resourceCollection;
+    }
 }

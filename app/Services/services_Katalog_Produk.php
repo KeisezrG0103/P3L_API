@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\model_detail_hampers;
 use App\Models\model_pesanan;
 use App\Models\model_produk;
 use App\Models\model_detail_transaksi;
+use App\Models\model_hampers;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\Strings;
 
 class services_Katalog_Produk
 {
@@ -49,7 +52,7 @@ class services_Katalog_Produk
             ->join('detail_hampers', 'detail_transaksi.Hampers_Id', '=', 'detail_hampers.Hampers_Id')
             ->where('pesanan.Tanggal_Pesan', $date)
             ->where('detail_hampers.Produk_Id', $id_produk)
-            ->where('pesanan.Status', '!=' ,'Ditolak')->where('pesanan.Status', '!=' ,'Dibatalkan')
+            ->where('pesanan.Status', '!=', 'Ditolak')->where('pesanan.Status', '!=', 'Dibatalkan')
             ->groupBy('pesanan.Id', 'detail_transaksi.Hampers_Id', 'detail_hampers.Produk_Id', 'detail_transaksi.Total_Produk', 'detail_hampers.Jumlah')
             ->get();
 
@@ -118,5 +121,63 @@ class services_Katalog_Produk
         });
 
         return $produk;
+    }
+
+
+    public function getHampers(): object
+    {
+        $hampers = model_hampers::select(
+            'hampers.Id',
+            'hampers.Nama_Hampers',
+            'hampers.Harga',
+            'hampers.Gambar',
+        )->from('hampers')->get();
+        return $hampers;
+    }
+
+    public function getProdukInHampersAndKuota(int $hampers_id, String $date): object
+    {
+        $produk = model_detail_hampers::select(
+            'produk.Id',
+            'produk.Nama',
+            'detail_hampers.Jumlah',
+        )->from('detail_hampers')
+            ->join('produk', 'detail_hampers.produk_Id', '=', 'produk.Id')
+            ->where('Hampers_Id', $hampers_id)
+            ->get();
+
+        $limit = 10;
+
+        foreach ($produk as $p) {
+            $p->Kuota = $this->cekQuotaProdukPerTanggal($date, $p->Id, $limit);
+            $p->Kuota = $this->cekQuotaProdukDalamHamper($date, $p->Id, $p->Kuota);
+
+            $p->Kuota = $p->Kuota < 0 ? 0 : $p->Kuota;
+        }
+        return $produk;
+    }
+
+    public function getMinimumKuotaFromProdukInHampers(int $hampers_id, String $date): int
+    {
+        $produk = $this->getProdukInHampersAndKuota($hampers_id, $date);
+
+        $min = 10;
+
+        foreach ($produk as $p) {
+            $min = $p->Kuota < $min ? $p->Kuota : $min;
+        }
+
+        return $min;
+    }
+
+    public function getHampersWithProdukAndKuota(String $date): object
+    {
+        $hampers = $this->getHampers();
+
+        foreach ($hampers as $h) {
+            $h->Kuota = $this->getMinimumKuotaFromProdukInHampers($h->Id, $date);
+        }
+
+        return $hampers;
     }
 }
