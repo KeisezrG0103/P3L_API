@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\controller_customer;
 use App\Http\Controllers\controller_pesanan;
+use App\Http\Controllers\controller_forgot_password;
+use App\Http\Controllers\controller_reset_password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\controller_auth;
 use App\Http\Controllers\controller_promo_poin;
@@ -20,6 +22,10 @@ Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
 Route::post('logout', [controller_auth::class, 'logout'])->middleware('auth:sanctum');
 Route::post('register_customer', [controller_customer::class, 'registerCustomer']);
+
+Route::post('/forgot-password', [controller_forgot_password::class, 'forgotPassword']);
+Route::post('/verify/pin', [controller_forgot_password::class, 'verifyPin']);
+Route::post('/reset-password', [controller_reset_password::class, 'resetPassword']);
 
 Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 
