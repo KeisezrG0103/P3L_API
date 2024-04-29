@@ -19,6 +19,7 @@ use App\Http\Controllers\controller_transaksi_pesanan;
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
 Route::post('logout', [controller_auth::class, 'logout'])->middleware('auth:sanctum');
+Route::post('register_customer', [controller_customer::class, 'registerCustomer']);
 
 Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 
