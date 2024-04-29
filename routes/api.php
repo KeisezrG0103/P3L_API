@@ -66,21 +66,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('bahan_baku/{id_bahan_baku}', [controller_bahan_baku::class, 'getById']);
         Route::get('bahan_baku_nama/{nama}', [controller_bahan_baku::class, 'getByNama']);
 
-
-        Route::post('penitip', [controller_penitip::class, 'createPenitip']);
-        Route::delete('penitip/{id_penitip}', [controller_penitip::class, 'deletePenitip']);
-        Route::put('penitip/{id_penitip}', [controller_penitip::class, 'updatePenitip']);
-        Route::get('penitip', [controller_penitip::class, 'readPenitip']);
-        Route::get('penitip/{id_penitip}', [controller_penitip::class, 'getById']);
-        Route::get('penitip_nama/{nama}', [controller_penitip::class, 'getByNama']);
-
-        Route::post('pengeluaran', [controller_pengeluaran::class, 'createPengeluaran']);
-        Route::delete('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'deletePengeluaran']);
-        Route::put('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'updatePengeluaran']);
-        Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
-        Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
-        Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
-
         Route::get('customer', [controller_customer::class, 'readCustomer']);
         Route::get('customer/{id_pengeluaran}', [controller_customer::class, 'getById']);
         Route::get('customer_nama/{nama}', [controller_customer::class, 'getByNama']);
@@ -101,6 +86,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('presensi', [controller_presensi::class, 'ReadAllPresensi']);
         Route::get('presensi/{date}', [controller_presensi::class, 'ReadByDate']);
         Route::put('presensi/{id}', [controller_presensi::class, 'ChangeStatusToTidakHadir']);
+
+        Route::post('penitip', [controller_penitip::class, 'createPenitip']);
+        Route::delete('penitip/{id_penitip}', [controller_penitip::class, 'deletePenitip']);
+        Route::put('penitip/{id_penitip}', [controller_penitip::class, 'updatePenitip']);
+        Route::get('penitip', [controller_penitip::class, 'readPenitip']);
+        Route::get('penitip/{id_penitip}', [controller_penitip::class, 'getById']);
+        Route::get('penitip_nama/{nama}', [controller_penitip::class, 'getByNama']);
+
+        Route::post('pengeluaran', [controller_pengeluaran::class, 'createPengeluaran']);
+        Route::delete('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'deletePengeluaran']);
+        Route::put('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'updatePengeluaran']);
+        Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
+        Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
+        Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
+
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
