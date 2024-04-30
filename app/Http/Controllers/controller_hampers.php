@@ -117,4 +117,22 @@ class controller_hampers extends Controller
         // Return the modified collection
         return $resourceCollection;
     }
+
+    public function getHampersByIdWithKuota(int $id, String $date)
+    {
+        $produk = $this->service_katalog_produk->getHampersByIdWithKuota($date, $id);
+
+        $produk_with_image = $this->service_utils->getSingleImageUrl($produk, 'hampers');
+
+        return new resource_hampers($produk_with_image, true);
+    }
+
+    public function getKuotaHampersById(int $id, String $date)
+    {
+        $produk = $this->service_katalog_produk->getMinimumKuotaFromProdukInHampers($id, $date);
+
+        return response()->json([
+            'Kuota' => $produk,
+        ]);
+    }
 }

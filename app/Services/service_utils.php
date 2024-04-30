@@ -48,7 +48,7 @@ class service_utils
     public function getSingleImageUrl($data, $key)
     {
         $image = $this->getImage($key, $data->Gambar);
-        if ($data->Gambar == null) {
+        if ($data->Gambar == null || $data->Gambar == "undefined") {
             $image = url(Storage::url('defaultimage.webp'));
         } else {
             $image = url($image);
@@ -61,6 +61,4 @@ class service_utils
     {
         return url(Storage::url('defaultimage.webp'));
     }
-
-
 }

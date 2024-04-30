@@ -115,7 +115,6 @@ class services_Katalog_Produk
     public function getProdukWithKuotaNoBoxAndCard(String $date): object
     {
         $produk = $this->getProdukWithKuota($date);
-        // how to make regex a variable?
         $produk = $produk->filter(function ($p) {
             return !preg_match('/box|card|tas/i', $p->Nama);
         });
@@ -178,6 +177,13 @@ class services_Katalog_Produk
             $h->Kuota = $this->getMinimumKuotaFromProdukInHampers($h->Id, $date);
         }
 
+        return $hampers;
+    }
+
+    public function getHampersByIdWithKuota(String $date, int $id)
+    {
+        $hampers = model_hampers::findOrFail($id);
+        $hampers->Kuota = $this->getMinimumKuotaFromProdukInHampers($id, $date);
         return $hampers;
     }
 }

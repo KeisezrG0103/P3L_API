@@ -150,22 +150,7 @@ class controller_produk extends Controller
         }
     }
 
-    public function getHamperandProdukwithKuota(String $date)
-    {
-        $produk = $this->service_katalog_produk->getHampersWithProdukAndKuota($date);
-        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
 
-        // Convert the transformed collection to a collection of `resource_hampers` instances
-        $resourceCollection = resource_hampers::collection($produk_with_image);
-
-        // Iterate through the collection and set the `forCustomer` flag for each instance
-        $resourceCollection->each(function ($resource) {
-            $resource->forCustomer = true;
-        });
-
-        // Return the modified collection
-        return $resourceCollection;
-    }
 
     public function getHampersProdukAndKuota(int $hampers_id, String $date)
     {
