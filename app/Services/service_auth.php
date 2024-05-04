@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class service_auth
 {
-    public function login_customer(Request $request) {
+    public function login_customer(Request $request)
+    {
         $request->validate([
             'Email' => 'required',
             'Password' => 'required'
@@ -19,18 +20,20 @@ class service_auth
 
         $user = model_customer::where('Email', $request->Email)->first();
 
-        if(!$user || !Hash::check($request->Password, $user->Password)){
+        if (!$user || !Hash::check($request->Password, $user->Password)) {
             return response()->json([
                 'message' => 'Email atau Password salah'
             ], 401);
         }
 
         $token = $user->createToken('token-name')->plainTextToken;
+        $Total_Poin = $user->Total_Poin;
 
-        return new resource_login($user, $token);
+        return new resource_login($user, $token, null, $Total_Poin);
     }
 
-    public function login_karyawan(Request $request) {
+    public function login_karyawan(Request $request)
+    {
         $request->validate([
             'Nama' => 'required',
             'Password' => 'required'
@@ -38,7 +41,7 @@ class service_auth
 
         $karyawan = model_karyawan::where('Nama', $request->Nama)->first();
 
-        if(!$karyawan || !Hash::check($request->Password, $karyawan->Password)){
+        if (!$karyawan || !Hash::check($request->Password, $karyawan->Password)) {
             return response()->json([
                 'message' => 'Nama atau Password salah'
             ], 401);
@@ -52,7 +55,7 @@ class service_auth
     }
 
 
-    public function isCustomer(Request $request) : bool
+    public function isCustomer(Request $request): bool
     {
         return $request->Email != null;
     }

@@ -107,29 +107,22 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
         Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
     });
+    Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
 
 
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
-
-
-    //fungsi customer kasi sini semua
-
+    Route::get('poin/{email}', [controller_promo_poin::class, 'getPointPerCustomer']);
+    Route::get('latestNota/{month}', [controller_pesanan::class, 'getLatestPesanan']);
 });
 
 // transaksi no 72
 Route::get('produkNonPenitipWithKuota/{date}', [controller_produk::class, 'getProdukNonPenitipWithKuota']);
-
 Route::get('produkKuota/{id}/{date}', [controller_produk::class, 'getProdukKuota']);
-
 Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
-
 Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);
 Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
-
 Route::post('generate_resep', [controller_resep::class, 'generateResepAllProduk']);
-
 Route::get('getHampersWithProdukAndKuota/{date}', [controller_hampers::class, 'getHamperandProdukwithKuota']);
-
 Route::get('getProdukInHampersWithKuota/{id}/{date}', [controller_produk::class, 'getHampersProdukAndKuota']);
 Route::get('getHampersByIdWithKuota/{id}/{date}', [controller_hampers::class, 'getHampersByIdWithKuota']);
 Route::get('getKuotaHampersById/{id}/{date}', [controller_hampers::class, 'getKuotaHampersById']);

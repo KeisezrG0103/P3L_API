@@ -27,4 +27,11 @@ class controller_pesanan extends Controller
         return  resource_pesanan::collection($pesanan);
     }
 
+    public function getLatestPesanan($month)
+    {
+        $pesanan = $this->service->getLatestPesananId($month);
+        return response()->json([
+            "no_pesanan" => $pesanan
+        ]);
+    }
 }
