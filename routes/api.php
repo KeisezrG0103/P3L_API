@@ -18,6 +18,7 @@ use App\Http\Controllers\controller_pengeluaran;
 use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
 use App\Http\Controllers\controller_resep;
+use App\Http\Controllers\controller_detail_pemesanan;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -113,6 +114,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
     Route::get('poin/{email}', [controller_promo_poin::class, 'getPointPerCustomer']);
     Route::get('latestNota/{month}', [controller_pesanan::class, 'getLatestPesanan']);
+    Route::get('generateNoNota/{month}', [controller_pesanan::class, 'generateNoNota']);
+    Route::post('pesanProduk', [controller_pesanan::class, 'PesanProduk']);
+    Route::post('AddDetailPemesanan', [controller_detail_pemesanan::class, 'addDetailPemesananProduk']);
 });
 
 // transaksi no 72

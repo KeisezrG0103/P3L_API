@@ -3,12 +3,23 @@
 namespace App\Services;
 
 use App\Models\model_pesanan;
+use App\Models\model_produk;
+use App\Services\services_poin;
+
+
 
 /**
  * Class service_pesanan.
  */
 class service_pesanan
 {
+    private services_poin $service_Poin;
+
+    public function __construct(services_poin $service_Poin)
+    {
+        $this->service_Poin = $service_Poin;
+    }
+
 
     public function readHistoryByEmail(string $id): object
     {
@@ -91,14 +102,79 @@ class service_pesanan
         $tahunNow = date('y');
 
         $latestPesanan = model_pesanan::select('Id')
-            ->whereMonth('Tanggal_Pesan', $month)
-            ->orderBy('Tanggal_Pesan', 'desc')
-            ->first();
+            ->latest()->get()->first();
 
-        if($latestPesanan == null){
-            return $tahunNow .'.'. $month.'.'. '00';
+
+        if ($latestPesanan == null) {
+            if ($month < 10)
+                return $tahunNow . '.0' . $month . '.' . '00';
+            else
+                return $tahunNow . '.' . $month . '.' . '00';
         }
 
         return $latestPesanan->Id;
+    }
+
+    public function generateNoNota($month): String
+    {
+        $latestPesanan = $this->getLatestPesananId($month);
+
+        $latestPesanan = explode('.', $latestPesanan);
+
+        $latestPesanan[2] = strval(intval($latestPesanan[2]) + 1);
+
+        $latestPesanan[2] = str_pad($latestPesanan[2], 2, '0', STR_PAD_LEFT);
+
+        return implode('.', $latestPesanan);
+    }
+
+    public function penggunaanPoin($email, $total): int
+    {
+        $poin = $this->service_Poin->getPoinPerCustomer($email);
+
+        $poinDigunakan = min(ceil($total / 100), $poin);
+
+        $sisaPoin = $poin - $poinDigunakan;
+        $this->service_Poin->setPoinPerCustomer($email, $sisaPoin);
+
+        return $poinDigunakan;
+    }
+
+    public function updateTotalBayar($poinDigunakan, $total): float
+    {
+        return $total - ($poinDigunakan * 100);
+    }
+
+    public function isPenitip($produkId): bool
+    {
+        $produk = model_produk::find($produkId);
+
+        return $produk->Penitip_Id != null;
+    }
+
+    public function kurangiStok($produkId, $jumlah): void
+    {
+        $produk = model_produk::find($produkId);
+
+        $produk->Stok -= $jumlah;
+
+        $produk->save();
+    }
+
+    public function PesanProduk($request): void
+    {
+        $pesanan = new model_pesanan();
+        $pesanan->Id = $request['Id'];
+        $pesanan->Customer_Email = $request['Customer_Email'];
+        $pesanan->Tanggal_Pesan = $request['Tanggal_Pesan'];
+        $pesanan->Tanggal_Diambil = $request['Tanggal_Diambil'];
+        $pesanan->Status = "Menunggu Pembayaran";
+        $pesanan->Status_Pembayaran = "Belum Lunas";
+        $pesanan->Poin_Didapat = $request['Poin_Didapat'];
+        $poinDigunakan = $this->penggunaanPoin($request['Customer_Email'], $request['Total']);
+        $pesanan->Penggunaan_Poin = $poinDigunakan;
+        $totalBayar = $this->updateTotalBayar($poinDigunakan, $request['Total']);
+        $pesanan->Total = $totalBayar;
+        $pesanan->save();
     }
 }
