@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class request_detail_pemesanan extends FormRequest
+class request_presensi extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,19 @@ class request_detail_pemesanan extends FormRequest
     public function rules(): array
     {
         return [
-            "SubTotal" => ['required', 'numeric'],
-            "Total_Produk" => ['required', 'numeric'],
-            "Pesanan_Id" => ['required', 'string'],
-            "Produk_Id" => ['integer'],
-            "Hampers_Id" => ['integer'],
+            "Tanggal" => ["required", "date"],
+            "Karyawan_Id" => ["required"],
+            "Status" => ["required"],
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            "Tanggal.required" => "Tanggal tidak boleh kosong",
+            "Role_id.required" => "Karyawan Id harus diisi",
+            "Status.required" => "Status harus di isi",
+        ];
+
     }
 }

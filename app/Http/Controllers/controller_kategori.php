@@ -10,10 +10,6 @@ class controller_kategori extends Controller
 {
     public function ReadKategori(){
         $kategori = model_kategori::all();
-        // cache this
-        $kategori_cached = cache()->remember('kategori', 60*60*24, function () use ($kategori) {
-            return $kategori;
-        });
-        return resource_kategori::collection($kategori_cached);
+        return resource_kategori::collection($kategori);
     }
 }

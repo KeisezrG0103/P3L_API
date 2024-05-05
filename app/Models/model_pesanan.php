@@ -15,6 +15,7 @@ class model_pesanan extends Model
 
     protected $primaryKey = 'Id';
 
+    public $timestamps = false;
 
     protected $fillable = [
         'Id',
@@ -29,11 +30,6 @@ class model_pesanan extends Model
         'Alamat_Id',
         'Status_Pembayaran',
         'Tip',
-        'Poin_Didapat',
-        'Penggunaan_Poin',
-        'Is_Deliver',
-        'created_at',
-        'updated_at',
     ];
 
 

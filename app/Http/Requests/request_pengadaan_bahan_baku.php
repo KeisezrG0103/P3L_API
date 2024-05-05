@@ -23,8 +23,8 @@ class request_pengadaan_bahan_baku extends FormRequest
     {
         return [
             "Satuan" => ["required", "string"],
-            "Qty" => ["required", "numeric", "min:0", "gte:0"],
-            "Harga" => ["required", "numeric", "min:0", "gte:0"],
+            "Qty" => ["required", "numeric"],
+            "Harga" => ["required", "numeric"],
             "BahanBaku_Id" => ["required", "numeric"],
             "Tanggal_Pengadaan" => ["required", "date"],
         ];
@@ -35,9 +35,7 @@ class request_pengadaan_bahan_baku extends FormRequest
         return [
             "Satuan.required" => "Satuan tidak boleh kosong",
             "Qty.required" => "Qty tidak boleh kosong",
-            "Qty.min" => "Stok tidak boleh negatif",
             "Harga.required" => "Harga tidak boleh kosong",
-            "Harga.min" => "Harga tidak boleh negatif",
             "BahanBaku_Id.required" => "Bahan Baku Id tidak boleh kosong",
             "Tanggal_Pengadaan.required" => "Tanggal Pengadaan tidak boleh kosong",
             "Satuan.string" => "Satuan harus berupa string",
@@ -45,8 +43,6 @@ class request_pengadaan_bahan_baku extends FormRequest
             "Harga.numeric" => "Harga harus berupa angka",
             "BahanBaku_Id.numeric" => "Bahan Baku Id harus berupa angka",
             "Tanggal_Pengadaan.date" => "Tanggal Pengadaan harus berupa tanggal",
-            "Qty.gte" => "Qty tidak boleh negatif",
-            "Harga.gte" => "Harga tidak boleh negatif",
         ];
 
     }

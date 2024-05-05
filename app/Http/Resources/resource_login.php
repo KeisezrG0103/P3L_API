@@ -15,14 +15,12 @@ class resource_login extends JsonResource
 
     private $token;
     private $role;
-    private $Total_Poin;
 
-    public function __construct($resource, $token, $role = null, $Total_Poin = null)
+    public function __construct($resource, $token, $role = null)
     {
         parent::__construct($resource);
         $this->token = $token;
         $this->role = $role;
-        $this->Total_Poin = $Total_Poin;
     }
 
 
@@ -33,8 +31,7 @@ class resource_login extends JsonResource
             return [
                 'Nama' => $this->Nama,
                 'Email' => $this->Email,
-                'token' => $this->token,
-                'Total_Poin' => $this->Total_Poin
+                'token' => $this->token
             ];
         } else {
             return [

@@ -2,20 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\request_customer;
+use Illuminate\Http\Request;
 use App\Models\model_customer;
 use App\Http\Resources\resource_customer;
-use App\Http\Requests\request_customer;
-use App\Services\service_customer;
-
+use App\Http\Resources\resource_gaji;
+use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\resource_pesanan;
+use App\Services\service_pesanan;
 
 class controller_customer extends Controller
 {
+    private service_pesanan $service;
 
-    private service_customer $service_customer;
-
-    public function __construct(service_customer $service_customer)
+    public function createCustomer(request_customer $request)
     {
-        $this->service_customer = $service_customer;
+        $validated = $request->validated();
+
+        $customer = model_customer::create($validated);
+        return new resource_customer($customer);
+    }
+
+    public function updateCustomer(request_customer $request, $id)
+    {
+        try {
+            $customer = model_customer::where('Email', $id)->firstOrFail();
+
+            if (isset($request['Password'])) {
+                $request['Password'] = Hash::make($request['Password']);
+            }
+
+            if (isset($request['Tanggal_Lahir'])) {
+                $request['Tanggal_Lahir'] = Carbon::parse($request['Tanggal_Lahir']);
+            }
+
+            $customer->update($request->all());
+            return new resource_customer($customer);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Terjadi kesalahan dalam pembaruan customer:' . $th->getMessage(),
+            ], 500);
+        }
     }
 
     public function readCustomer()
@@ -50,6 +79,19 @@ class controller_customer extends Controller
         return new resource_customer($customer);
     }
 
+    public function getCustomerByEmail(string $email)
+    {
+        $customer = model_customer::where('Email', $email)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'message' => "Customer dengan nama '$email' tidak ditemukan."
+            ], 404);
+        }
+
+        return new resource_customer($customer);
+    }
+
     public function registerCustomer(request_customer $request)
     {
         $validated = $request->validated();
@@ -65,11 +107,15 @@ class controller_customer extends Controller
     }
 
 
-    public function getTanggalLahirPerCustomer(String $Email)
+    public function __construct(service_pesanan $service)
     {
-        $Tanggal_Lahir_Customer = $this->service_customer->getTanggalLahirByEmail($Email);
-        return response()->json([
-            "Tanggal_Lahir" => $Tanggal_Lahir_Customer
-        ]);
+        $this->service = $service;
+    }
+
+    public function getHistoryByEmail(string $id)
+    {
+        $pesanan = $this->service->readHistoryByEmail($id);
+
+        return  resource_pesanan::collection($pesanan);
     }
 }

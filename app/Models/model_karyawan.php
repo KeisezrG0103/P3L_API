@@ -18,7 +18,7 @@ class model_karyawan extends Model
     protected $fillable = [
         'Password',
         'Nama',
-        'Total_Gaji',
+        'TotalGaji',
         'Bonus',
         'Role_Id'
     ];

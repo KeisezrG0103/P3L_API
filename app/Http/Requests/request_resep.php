@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class request_hampers extends FormRequest
+class request_resep extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,21 +22,16 @@ class request_hampers extends FormRequest
     public function rules(): array
     {
         return [
-            'Nama_Hampers' => ['required', 'string'],
-            'Harga' => ['required', 'numeric'],
-            'Gambar' => ['nullable'],
+            // "Nama" => ["required", "string"],
+            
         ];
     }
 
     public function messages(): array
     {
         return [
-            'Nama_Hampers.required' => 'Nama hampers harus diisi',
-            'Nama_Hampers.string' => 'Nama hampers harus berupa string',
-            'Harga.required' => 'Harga harus diisi',
-            'Harga.numeric' => 'Harga harus berupa angka',
-            'Gambar.mimes' => 'Gambar harus berupa file dengan ekstensi png, jpg, atau jpeg',
+            "Nama.required" => "Nama tidak boleh kosong",
         ];
+
     }
 }
-

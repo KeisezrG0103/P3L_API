@@ -23,7 +23,7 @@ class request_bahan_baku extends FormRequest
     {
         return [
             "Nama" => ["required", "string"],
-            "Qty" => ["required", "numeric","min:0","gte:0"],
+            "Qty" => ["required", "numeric"],
             "Satuan" => ["required", "string"],
         ];
     }
@@ -32,13 +32,11 @@ class request_bahan_baku extends FormRequest
     {
         return [
             "Nama.required" => "Nama tidak boleh kosong",
-            "Qty.required" => "Stok tidak boleh kosong",
-            "Qty.min" => "Stok tidak boleh negatif",
+            "Qty.required" => "Qty tidak boleh kosong",
             "Satuan.required" => "Satuan tidak boleh kosong",
             "Nama.string" => "Nama harus berupa string",
-            "Qty.numeric" => "Stok harus berupa angka",
+            "Qty.numeric" => "Qty harus berupa angka",
             "Satuan.string" => "Satuan harus berupa string",
-            "Qty.gte" => "Stok tidak boleh negatif",
         ];
 
     }

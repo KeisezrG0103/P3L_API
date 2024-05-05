@@ -18,7 +18,7 @@ use App\Http\Controllers\controller_pengeluaran;
 use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
 use App\Http\Controllers\controller_resep;
-use App\Http\Controllers\controller_detail_pemesanan;
+use App\Http\Controllers\controller_karyawan;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -34,6 +34,10 @@ Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['middleware' => ['can:isOwner']], function () {
+        Route::post('gaji_karyawan', [controller_karyawan::class, 'createkaryawan']);
+        Route::delete('gaji_karyawan/{id_karyawan}', [controller_karyawan::class, 'deletekaryawan']);
+        Route::get('gaji_karyawan', [controller_karyawan::class, 'readkaryawan']);
+        Route::put('gaji_karyawan/{id_karyawan}', [controller_karyawan::class, 'updateGaji']);
     });
 
     Route::group(['middleware' => ['can:isAdmin']], function () {
@@ -75,6 +79,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         Route::get('history/{email}', [controller_pesanan::class, 'getHistoryByEmail']);
         Route::get('history', [controller_pesanan::class, 'getAllHistoryPesanan']);
+
+        Route::post('resep', [controller_resep::class, 'createresep']);
+        Route::delete('resep/{id_resep}', [controller_resep::class, 'deleteresep']);
+        Route::put('resep/{id_resep}', [controller_resep::class, 'updateresep']);
+        Route::get('resep', [controller_resep::class, 'readresep']);
+        Route::get('resep/{id_resep}', [controller_resep::class, 'getDetailById']);
+        Route::get('resep_nama/{nama}', [controller_resep::class, 'getDetail']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
@@ -103,30 +114,50 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
         Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
         Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
+
+        Route::post('karyawan', [controller_karyawan::class, 'createkaryawan']);
+        Route::delete('karyawan/{id_karyawan}', [controller_karyawan::class, 'deletekaryawan']);
+        Route::get('karyawan', [controller_karyawan::class, 'readkaryawan']);
+        Route::get('karyawan/{id_karyawan}', [controller_karyawan::class, 'getById']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
         Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
     });
-    Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
 
+    // get, put karyawan pindah ke luar middleware karena semua role karyawan bisa update password
+    Route::put('karyawan/{id_karyawan}', [controller_karyawan::class, 'updatekaryawan']);
+    Route::get('karyawan_nama/{nama}', [controller_karyawan::class, 'getByNama']);
+
+    Route::put('password_karyawan/{id_karyawan}', [controller_karyawan::class, 'updatePasswordKaryawan']);
 
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
-    Route::get('poin/{email}', [controller_promo_poin::class, 'getPointPerCustomer']);
-    Route::get('latestNota/{month}', [controller_pesanan::class, 'getLatestPesanan']);
-    Route::get('generateNoNota/{month}', [controller_pesanan::class, 'generateNoNota']);
-    Route::post('pesanProduk', [controller_pesanan::class, 'PesanProduk']);
-    Route::post('AddDetailPemesanan', [controller_detail_pemesanan::class, 'addDetailPemesananProduk']);
+    
+    Route::post('customers', [controller_customer::class, 'registerCustomer']);
+    Route::put('customerss/{email_customer}', [controller_customer::class, 'updatecustomer']);
+    Route::get('customers', [controller_customer::class, 'readcustomer']);
+    Route::get('customers/{email_customer}', [controller_customer::class, 'getHistoryByEmail']);
+    Route::get('customers_nama/{nama}', [controller_customer::class, 'getByNama']);
+    Route::get('customers_email/{email}', [controller_customer::class, 'getCustomerByEmail']);
+
+    //fungsi customer kasi sini semua
+
 });
 
 // transaksi no 72
 Route::get('produkNonPenitipWithKuota/{date}', [controller_produk::class, 'getProdukNonPenitipWithKuota']);
+
 Route::get('produkKuota/{id}/{date}', [controller_produk::class, 'getProdukKuota']);
+
 Route::get('ProdukPenitip', [controller_produk::class, 'getProdukPenitip']);
+
 Route::get('getProdukByIdWithQuota/{Id}/{date}', [controller_transaksi_pesanan::class, 'getProdukByIdWithQuota']);
 Route::get('kategori', [controller_kategori::class, 'ReadKategori']);
+
 Route::post('generate_resep', [controller_resep::class, 'generateResepAllProduk']);
+
 Route::get('getHampersWithProdukAndKuota/{date}', [controller_hampers::class, 'getHamperandProdukwithKuota']);
+
 Route::get('getProdukInHampersWithKuota/{id}/{date}', [controller_produk::class, 'getHampersProdukAndKuota']);
 Route::get('getHampersByIdWithKuota/{id}/{date}', [controller_hampers::class, 'getHampersByIdWithKuota']);
 Route::get('getKuotaHampersById/{id}/{date}', [controller_hampers::class, 'getKuotaHampersById']);

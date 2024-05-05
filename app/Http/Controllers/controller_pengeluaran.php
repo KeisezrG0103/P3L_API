@@ -50,7 +50,9 @@ class controller_pengeluaran extends Controller
                 'message' => 'Pengeluaran dengan Id ' . $id . ' berhasil dihapus.',
             ]);
 
-        
+            $pengeluaranResource = new resource_pengeluaran_lain_lain($pengeluaran);
+            
+            return $pengeluaranResource;
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Pengeluaran dengan Id ' . $id . ' tidak ditemukan',
