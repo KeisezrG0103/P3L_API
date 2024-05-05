@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\request_bahan_baku;
 use Illuminate\Http\Request;
 use App\Models\model_bahan_baku;
+use App\Models\model_pengadaan_bahan_baku;
 use App\Http\Resources\resource_bahan_baku;
 use App\Services\service_bahan_baku;
 
@@ -37,28 +38,36 @@ class controller_bahan_baku extends Controller
     
     public function readBahanBaku()
     {
-        $bahan_baku = model_bahan_baku::all();
+        $bahan_baku = model_bahan_baku::where('is_deleted', 0)->get();
         return resource_bahan_baku::collection($bahan_baku);
     }
 
     public function deleteBahanBaku(int $id)
-    {
-        try {
-            $bahanBaku = model_bahan_baku::findOrFail($id);
+{
+    try {
 
+        $bahanBaku = model_bahan_baku::findOrFail($id);
+
+        $isUsedInPengadaan = model_pengadaan_bahan_baku::where('BahanBaku_Id', $id)->exists();
+
+        if ($isUsedInPengadaan) {
+            $bahanBaku->update(['is_deleted' => 1]);
+        } else {
             $bahanBaku->delete();
-
-            return response()->json([
-                'message' => 'Bahan Baku dengan Id ' . $id . ' berhasil dihapus.',
-            ]);
-
-
-        } catch (\Throwable $th) {
-            return response()->json([
-                'message' => 'Bahan Baku dengan Id ' . $id . ' tidak ditemukan',
-            ], 404);
         }
+
+        return response()->json([
+            'message' => 'Bahan Baku dengan Id ' . $id . ' berhasil dihapus.',
+        ]);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'message' => 'Bahan Baku dengan Id ' . $id . ' tidak ditemukan',
+        ], 404);
     }
+}
+
+    
 
 
 
