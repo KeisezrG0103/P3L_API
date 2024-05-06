@@ -10,17 +10,18 @@ class service_detail_pemesanan
 {
     public function isPenitip($produkId): bool
     {
-        $produk = model_produk::find($produkId);
-
-        return $produk->Penitip_Id != null;
+        try {
+            $produk = model_produk::find($produkId);
+            return $produk->Penitip_Id !== null;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function kurangiStok($produkId, $jumlah): void
     {
         $produk = model_produk::find($produkId);
-
         $produk->Stok -= $jumlah;
-
         $produk->save();
     }
     public function addDetailPemesananProduk($request)
