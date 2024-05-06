@@ -17,6 +17,7 @@ class model_bahan_baku extends Model
         'Id',
         'Nama',
         'Qty',
-        'Satuan'
+        'Satuan',
+        'is_deleted'
     ];
 }
