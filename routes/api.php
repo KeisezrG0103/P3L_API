@@ -130,3 +130,4 @@ Route::get('getHampersWithProdukAndKuota/{date}', [controller_hampers::class, 'g
 Route::get('getProdukInHampersWithKuota/{id}/{date}', [controller_produk::class, 'getHampersProdukAndKuota']);
 Route::get('getHampersByIdWithKuota/{id}/{date}', [controller_hampers::class, 'getHampersByIdWithKuota']);
 Route::get('getKuotaHampersById/{id}/{date}', [controller_hampers::class, 'getKuotaHampersById']);
+Route::post('AutomaticPresensi', [controller_presensi::class, 'AutomaticPresensi']);
