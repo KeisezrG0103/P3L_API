@@ -32,7 +32,6 @@ Route::post('/reset-password', [controller_reset_password::class, 'resetPassword
 Route::post('register_karyawan', [controller_auth::class, 'register_karyawan']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
     Route::group(['middleware' => ['can:isOwner']], function () {
         Route::post('gaji_karyawan', [controller_karyawan::class, 'createkaryawan']);
         Route::delete('gaji_karyawan/{id_karyawan}', [controller_karyawan::class, 'deletekaryawan']);
