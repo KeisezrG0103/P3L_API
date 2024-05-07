@@ -59,7 +59,9 @@ class controller_produk extends Controller
                 $validated = $this->service_utils->saveImage($validated, 'produk');
             }
             $produk->update($validated);
-            $this->service_resep->updateResep($produk, $id);
+            if ($produk->Penitip_Id == null) {
+                $this->service_resep->updateResep($produk, $id);
+            }
             return new resource_produk($produk);
         } catch (\Throwable $th) {
             return response()->json([
