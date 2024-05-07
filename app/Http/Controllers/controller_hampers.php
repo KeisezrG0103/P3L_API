@@ -97,6 +97,36 @@ class controller_hampers extends Controller
         }
     }
 
+    public function getHamperandProdukwithKuota(String $date)
+    {
+        $produk = $this->service_katalog_produk->getHampersWithProdukAndKuota($date);
+        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'hampers');
 
+        $resourceCollection = resource_hampers::collection($produk_with_image);
 
+        $resourceCollection->each(function ($resource) {
+            $resource->forCustomer = true;
+        });
+
+        // Return the modified collection
+        return $resourceCollection;
+    }
+
+    public function getHampersByIdWithKuota(int $id, String $date)
+    {
+        $produk = $this->service_katalog_produk->getHampersByIdWithKuota($date, $id);
+
+        $produk_with_image = $this->service_utils->getSingleImageUrl($produk, 'hampers');
+
+        return new resource_hampers($produk_with_image, true);
+    }
+
+    public function getKuotaHampersById(int $id, String $date)
+    {
+        $produk = $this->service_katalog_produk->getMinimumKuotaFromProdukInHampers($id, $date);
+
+        return response()->json([
+            'Kuota' => $produk,
+        ]);
+    }
 }

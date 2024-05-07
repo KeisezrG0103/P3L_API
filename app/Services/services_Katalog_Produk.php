@@ -18,7 +18,7 @@ class services_Katalog_Produk
             'pesanan.Id',
             'detail_transaksi.Produk_Id',
             'detail_transaksi.Total_Produk',
-        )->where('pesanan.Tanggal_Pesan', $date)->where('detail_transaksi.Produk_Id', $id_produk)
+        )->where('pesanan.Tanggal_Diambil', $date)->where('detail_transaksi.Produk_Id', $id_produk)
             ->where('pesanan.Status', '!=', 'Ditolak')->where('pesanan.Status', '!=', 'Dibatalkan')
             ->join('detail_transaksi', 'pesanan.Id', '=', 'detail_transaksi.Pesanan_Id')
             ->get();
@@ -50,7 +50,7 @@ class services_Katalog_Produk
         )
             ->join('detail_transaksi', 'pesanan.Id', '=', 'detail_transaksi.Pesanan_Id')
             ->join('detail_hampers', 'detail_transaksi.Hampers_Id', '=', 'detail_hampers.Hampers_Id')
-            ->where('pesanan.Tanggal_Pesan', $date)
+            ->where('pesanan.Tanggal_Diambil', $date)
             ->where('detail_hampers.Produk_Id', $id_produk)
             ->where('pesanan.Status', '!=', 'Ditolak')->where('pesanan.Status', '!=', 'Dibatalkan')
             ->groupBy('pesanan.Id', 'detail_transaksi.Hampers_Id', 'detail_hampers.Produk_Id', 'detail_transaksi.Total_Produk', 'detail_hampers.Jumlah')
@@ -136,6 +136,8 @@ class services_Katalog_Produk
 
     public function getProdukInHampersAndKuota(int $hampers_id, String $date): object
     {
+
+
         $produk = model_detail_hampers::select(
             'produk.Id',
             'produk.Nama',

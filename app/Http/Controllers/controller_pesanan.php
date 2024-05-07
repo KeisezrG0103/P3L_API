@@ -27,4 +27,30 @@ class controller_pesanan extends Controller
         return  resource_pesanan::collection($pesanan);
     }
 
+    public function getLatestPesanan($month)
+    {
+        $pesanan = $this->service->getLatestPesananId($month);
+        return response()->json([
+            "no_pesanan" => $pesanan
+        ]);
+    }
+
+    public function generateNoNota($month)
+    {
+        $nota = $this->service->generateNoNota($month);
+        return response()->json([
+            "no_nota" => $nota
+        ]);
+    }
+
+    public function PesanProduk(request_pesanan $request)
+    {
+        $pesananValidated = $request->validated();
+        $this->service->PesanProduk($pesananValidated);
+        return response()->json([
+            "message" => "Pesanan berhasil dibuat"
+        ]);
+    }
+
+
 }
