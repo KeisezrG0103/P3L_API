@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\request_auth;
+use App\Http\Requests\request_customer;
 use App\Models\model_customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,9 +15,8 @@ use App\Services\service_auth;
 
 class controller_auth extends Controller
 {
-    public function register(request_auth $request)
+    public function register(request_customer $request)
     {
-        $request->setIsRegistration(true);
 
         $registerData = $request->validated();
         $registerData['Password'] = Hash::make($registerData['Password']);
