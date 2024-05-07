@@ -50,6 +50,9 @@ class controller_produk extends Controller
 
 
             $produk->update($validated);
+            if ($produk->Penitip_Id == null) {
+                $this->service_resep->updateResep($produk, $id);
+            }
             return new resource_produk($produk);
         } catch (\Throwable $th) {
             return response()->json([
