@@ -74,7 +74,14 @@ class controller_pengadaan_bahan_baku extends Controller
     {
         try {
             $pengadaan_bahan_baku = model_pengadaan_bahan_baku::findOrFail($id);
+
+            $jumlahStok = $this->service_pengadaan_bahan_baku->getJumlahQtyBahanBaku($pengadaan_bahan_baku->BahanBaku_Id);
+            $TotalUpdateStok = $jumlahStok->Qty - $pengadaan_bahan_baku->Qty;
+            $this->service_pengadaan_bahan_baku->updateQtyBahanBaku($pengadaan_bahan_baku->BahanBaku_Id, $TotalUpdateStok);
+
             $pengadaan_bahan_baku->delete();
+            
+
             return response()->json(['message' => 'Data Deleted'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 404);

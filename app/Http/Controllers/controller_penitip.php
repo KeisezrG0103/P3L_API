@@ -7,6 +7,7 @@ use App\Http\Resources\resource_penitip;
 use App\Services\PenitipService;
 use Illuminate\Http\Request;
 use App\Models\model_penitip;
+use App\Models\model_produk;
 use App\Services\service_penitip;
 
 class controller_penitip extends Controller
@@ -50,7 +51,7 @@ class controller_penitip extends Controller
     
     
     public function ReadPenitip(){
-        $penitip = model_penitip::all();
+        $penitip = model_penitip::where('is_deleted', 0)->get();
         return resource_penitip::collection($penitip);
     }
 
@@ -60,7 +61,14 @@ class controller_penitip extends Controller
         try {
             $penitip = model_penitip::findOrFail($id);
 
-            $penitip->delete();
+            $isUsedInProduk = model_produk::where('Penitip_Id', $id)->exists();
+
+            if ($isUsedInProduk) {
+                $penitip->update(['is_deleted' => 1]);
+            } else {
+                $penitip->delete();
+            }
+
 
             return response()->json([
                 'message' => 'Penitip dengan Id ' . $id . ' berhasil dihapus.',

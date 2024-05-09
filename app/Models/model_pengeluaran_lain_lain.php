@@ -21,6 +21,7 @@ class model_pengeluaran_lain_lain extends Model
         'Harga',
         'Satuan',
         'Qty',
+        'tanggal',
     ];
 
 

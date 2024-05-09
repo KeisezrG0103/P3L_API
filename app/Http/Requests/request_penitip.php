@@ -24,6 +24,8 @@ class request_penitip extends FormRequest
         return [
             "Nama_Penitip" => ["required", "string"],
             "komisi" => ["numeric", "min:0", "gte:0"],
+            "email" => ["required", "email"],
+            "no_telp" => ["numeric", "required"],
         ];
     }
 
@@ -35,6 +37,10 @@ class request_penitip extends FormRequest
             "komisi.numeric" => "Komisi harus berupa numeric",
             "komisi.min" => "Komisi tidak boleh negatif",
             "komisi.gte" => "Komisi tidak boleh negatif",
+            "email.required" => "Email tidak boleh kosong",
+            "email.email" => "Email tidak valid",
+            "no_telp.numeric" => "Nomor Telepon harus numeric",
+            "no_telp.required" => "Nomor Telepon tidak boleh kosong",
         ];
 
     }

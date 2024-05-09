@@ -27,6 +27,7 @@ class request_pengeluaran_lain_lain extends FormRequest
             "Harga" => ["required", "numeric", "min:0", "gte:0"],
             "Qty" => ["required", "numeric", "min:0", "gte:0"],
             "Satuan" => ["required", "string"],
+            "tanggal" => ["required"],
         ];
     }
 
@@ -45,6 +46,7 @@ class request_pengeluaran_lain_lain extends FormRequest
             "Satuan.string" => "Satuan harus berupa string",
             "Qty.gte" => "Qty tidak boleh negatif",
             "Harga.gte" => "Harga tidak boleh negatif",
+            "tanggal.required" => "Tanggal tidak boleh kosong",
         ];
 
     }
