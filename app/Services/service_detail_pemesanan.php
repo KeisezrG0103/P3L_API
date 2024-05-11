@@ -24,6 +24,13 @@ class service_detail_pemesanan
         $produk->Stok -= $jumlah;
         $produk->save();
     }
+
+    public function CekStokProdukNoPenitip($produkId, $jumlah): bool
+    {
+        $produk = model_produk::find($produkId);
+        return $produk->Stok >= $jumlah;
+    }
+
     public function addDetailPemesananProduk($request)
     {
         $detail_transaksi = new model_detail_transaksi();
@@ -37,6 +44,10 @@ class service_detail_pemesanan
             $detail_transaksi->Hampers_Id = null;
 
             if ($this->isPenitip($request['Produk_Id'])) {
+                $this->kurangiStok($request['Produk_Id'], $request['Total_Produk']);
+            }
+
+            if ($this->CekStokProdukNoPenitip($request['Produk_Id'], $request['Total_Produk']) !== 0) {
                 $this->kurangiStok($request['Produk_Id'], $request['Total_Produk']);
             }
         } else if (isset($request['Hampers_Id']) && $request['Hampers_Id'] !== null) {

@@ -10,8 +10,12 @@ class service_utils
     public function saveImage($someRequest, $key)
     {
         $file = $someRequest['Gambar'];
+
+        // compress image
+
         $file_name = time() . '.' . $file->getClientOriginalExtension();
         Storage::disk('public')->put($key . '/' . $file_name, file_get_contents($file));
+
 
         $someRequest['Gambar'] = $file_name;
 
