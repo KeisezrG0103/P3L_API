@@ -70,7 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('bahan_baku_nama/{nama}', [controller_bahan_baku::class, 'getByNama']);
 
         Route::get('customer', [controller_customer::class, 'readCustomer']);
-        Route::get('customer/{id_pengeluaran}', [controller_customer::class, 'getById']);
+
         Route::get('customer_nama/{nama}', [controller_customer::class, 'getByNama']);
 
         Route::get('history/{email}', [controller_pesanan::class, 'getHistoryByEmail']);
@@ -110,7 +110,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
 
-
+    Route::get('customer/{Email}', [controller_customer::class, 'getById']);
     Route::get('penitip', [controller_penitip::class, 'ReadPenitip']);
     Route::get('poin/{email}', [controller_promo_poin::class, 'getPointPerCustomer']);
     Route::get('latestNota/{month}', [controller_pesanan::class, 'getLatestPesanan']);
