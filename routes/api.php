@@ -3,6 +3,7 @@
 use App\Http\Controllers\controller_customer;
 use App\Http\Controllers\controller_pesanan;
 use App\Http\Controllers\controller_forgot_password;
+use App\Http\Controllers\controller_pesanan_selesai;
 use App\Http\Controllers\controller_reset_password;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\controller_auth;
@@ -117,6 +118,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('generateNoNota/{month}', [controller_pesanan::class, 'generateNoNota']);
     Route::post('pesanProduk', [controller_pesanan::class, 'PesanProduk']);
     Route::post('AddDetailPemesanan', [controller_detail_pemesanan::class, 'addDetailPemesananProduk']);
+
+    route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
 });
 
 // transaksi no 72

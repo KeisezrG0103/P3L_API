@@ -5,8 +5,9 @@ namespace App\Services;
 use App\Models\model_pesanan;
 use App\Models\model_produk;
 use App\Services\services_poin;
-
-
+use App\Models\model_detail_transaksi;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class service_pesanan.
@@ -14,11 +15,14 @@ use App\Services\services_poin;
 class service_pesanan
 {
     private services_poin $service_Poin;
+    private service_utils $service_Utils;
 
-    public function __construct(services_poin $service_Poin)
+    public function __construct(services_poin $service_Poin, service_utils $service_Utils)
     {
         $this->service_Poin = $service_Poin;
+        $this->service_Utils = $service_Utils;
     }
+
 
 
     public function readHistoryByEmail(string $id): object
@@ -176,5 +180,83 @@ class service_pesanan
         $totalBayar = $this->updateTotalBayar($poinDigunakan, $request['Total']);
         $pesanan->Total = $totalBayar;
         $pesanan->save();
+    }
+
+
+    public function getTanggalPesananSelesai($Email)
+    {
+        $pesanan = model_pesanan::select('Tanggal_Diambil')
+            ->where('Customer_Email', $Email)
+            ->where('Status', 'Selesai')
+            ->get();
+        return $pesanan;
+    }
+
+    public function getNoNotaDenganStatusSelesai($Email)
+    {
+        $pesanan = model_pesanan::select('Id')
+            ->where('Customer_Email', $Email)
+            ->where('Status', 'Selesai')
+            ->get();
+        return $pesanan;
+    }
+    public function getDetailPesananByNota($Id)
+    {
+        $detailPesanan = model_detail_transaksi::select(
+            'detail_transaksi.Total_Produk',
+            DB::raw('IFNULL(produk.Nama, NULL) as Nama_Produk'),
+            DB::raw('IFNULL(hampers.Nama_Hampers, NULL) as Nama_Hampers'),
+            'hampers.Gambar as Gambar_Hampers',
+            'produk.Gambar as Gambar_Produk',
+            'detail_transaksi.SubTotal'
+        )->leftJoin('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
+            ->leftJoin('hampers', 'detail_transaksi.Hampers_Id', '=', 'hampers.Id')
+            ->where('detail_transaksi.Pesanan_id', $Id)
+            ->where(function ($query) {
+                $query->whereNotNull('produk.Nama')
+                    ->orWhereNotNull('hampers.Nama_Hampers');
+            })
+            ->get();
+
+        foreach ($detailPesanan as $detail) {
+            if (!is_null($detail->Nama_Produk)) {
+                if ($detail->Gambar_Produk == null || $detail->Gambar_Produk == "undefined")
+                    $detail->Gambar_Produk = url(Storage::url('defaultimage.webp'));
+                else
+                    $detail->Gambar_Produk = url(Storage::url('produk/' . $detail->Gambar_Produk));
+            } else {
+                if ($detail->Gambar_Hampers == null || $detail->Gambar_Hampers == "undefined")
+                    $detail->Gambar_Hampers = url(Storage::url('defaultimage.webp'));
+                else
+                    $detail->Gambar_Hampers = url(Storage::url('hampers/' . $detail->Gambar_Hampers));
+            }
+        }
+
+        return $detailPesanan;
+    }
+
+
+
+
+
+
+
+
+    public function getPesananSelesaiWithDetailPesananAndTanggal($Email)
+    {
+        //group by tanggal diambil
+        $Nota = $this->getNoNotaDenganStatusSelesai($Email);
+        $Tanggal = $this->getTanggalPesananSelesai($Email);
+
+        $data = [];
+        for ($i = 0; $i < count($Nota); $i++) {
+            $detailPesanan = $this->getDetailPesananByNota($Nota[$i]->Id);
+            $data[] = [
+                'No_Nota' => $Nota[$i]->Id,
+                'Tanggal_Diambil' => $Tanggal[$i]->Tanggal_Diambil,
+                'Detail_Pesanan' => $detailPesanan
+            ];
+        }
+        return $data;
     }
 }

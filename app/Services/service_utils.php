@@ -65,4 +65,10 @@ class service_utils
     {
         return url(Storage::url('defaultimage.webp'));
     }
+
+    public function getImageUrl($key, $file_name)
+    {
+        $url = Storage::url($key . '/' . $file_name);
+        return $url;
+    }
 }
