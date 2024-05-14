@@ -53,5 +53,9 @@ class controller_pesanan extends Controller
         ]);
     }
 
-
+    public function getNotaById($NoNota)
+    {
+        $pesanan = $this->service->getFullNota($NoNota);
+        return response()->json($pesanan);
+    }
 }

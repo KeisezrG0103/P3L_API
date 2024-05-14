@@ -119,6 +119,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('pesanProduk', [controller_pesanan::class, 'PesanProduk']);
     Route::post('AddDetailPemesanan', [controller_detail_pemesanan::class, 'addDetailPemesananProduk']);
 
+    Route::get('getNotaById/{NoNota}', [controller_pesanan::class, 'getNotaById']);
+
     route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
 });
 

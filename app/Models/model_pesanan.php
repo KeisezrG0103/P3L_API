@@ -32,6 +32,7 @@ class model_pesanan extends Model
         'Poin_Didapat',
         'Penggunaan_Poin',
         'Is_Deliver',
+        'Jasa_Pengiriman',
         'created_at',
         'updated_at',
     ];

@@ -237,11 +237,6 @@ class service_pesanan
 
 
 
-
-
-
-
-
     public function getPesananSelesaiWithDetailPesananAndTanggal($Email)
     {
         //group by tanggal diambil
@@ -257,6 +252,59 @@ class service_pesanan
                 'Detail_Pesanan' => $detailPesanan
             ];
         }
+        return $data;
+    }
+
+
+    public function GenerateNota($NoNota)
+    {
+        $Nota = model_pesanan::select(
+            "pesanan.Id as NoNota",
+            "pesanan.Tanggal_Pesan as TanggalPesan",
+            "pesanan.Tanggal_Diambil as TanggalDiambil",
+            "pesanan.Tanggal_Pelunasan as TanggalPelunasan",
+            "customer.Email as Email",
+            "alamat.Alamat as Alamat",
+            "pesanan.Jasa_Pengiriman as JasaPengiriman",
+            "pesanan.Ongkos_Kirim as OngkosKirim",
+            "alamat.Jarak as Jarak",
+            "pesanan.Poin_Didapat as PoinDidapat",
+            DB::raw("sum(detail_transaksi.SubTotal) as Total_Raw"),
+            DB::raw("sum(pesanan.Penggunaan_Poin * 100) as PoinDigunakan"),
+            "pesanan.Total as Total"
+        )->leftJoin("customer", "pesanan.Customer_Email", "=", "customer.Email")
+            ->leftJoin("alamat", "pesanan.Alamat_Id", "=", "alamat.Id")
+            ->leftJoin("detail_transaksi", "detail_transaksi.Pesanan_Id", "=", "pesanan.Id")
+            ->where("pesanan.Id", $NoNota)
+            ->groupBy(
+                "pesanan.Id",
+                "pesanan.Tanggal_Pesan",
+                "pesanan.Tanggal_Diambil",
+                "pesanan.Tanggal_Pelunasan",
+                "customer.Email",
+                "alamat.Alamat",
+                "pesanan.Jasa_Pengiriman",
+                "pesanan.Ongkos_Kirim",
+                "alamat.Jarak",
+                "pesanan.Total",
+                "pesanan.Poin_Didapat"
+            )
+            ->get();
+
+        return $Nota;
+    }
+
+
+    public function getFullNota($NoNota)
+    {
+        $Nota = $this->GenerateNota($NoNota);
+        $DetailPesanan = $this->getDetailPesananByNota($NoNota);
+
+        $data = [
+            'Nota' => $Nota,
+            'DetailPesanan' => $DetailPesanan
+        ];
+
         return $data;
     }
 }
