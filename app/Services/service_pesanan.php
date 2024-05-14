@@ -146,8 +146,17 @@ class service_pesanan
 
     public function updateTotalBayar($poinDigunakan, $total): float
     {
-        return $total - ($poinDigunakan * 100);
+        $maksPoin = floor($total / 100);
+
+        if ($poinDigunakan > $maksPoin) {
+            $poinDigunakan = $maksPoin;
+        }
+
+        $totalBayar = $total - ($poinDigunakan * 100);
+
+        return $totalBayar;
     }
+
 
     public function isPenitip($produkId): bool
     {
@@ -208,7 +217,9 @@ class service_pesanan
             DB::raw('IFNULL(hampers.Nama_Hampers, NULL) as Nama_Hampers'),
             'hampers.Gambar as Gambar_Hampers',
             'produk.Gambar as Gambar_Produk',
-            'detail_transaksi.SubTotal'
+            'detail_transaksi.SubTotal',
+            'produk.Harga as Harga_Produk',
+            'hampers.Harga as Harga_Hampers',
         )->leftJoin('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
             ->leftJoin('hampers', 'detail_transaksi.Hampers_Id', '=', 'hampers.Id')
             ->where('detail_transaksi.Pesanan_id', $Id)
@@ -270,7 +281,7 @@ class service_pesanan
             "alamat.Jarak as Jarak",
             "pesanan.Poin_Didapat as PoinDidapat",
             DB::raw("sum(detail_transaksi.SubTotal) as Total_Raw"),
-            DB::raw("sum(pesanan.Penggunaan_Poin * 100) as PoinDigunakan"),
+            DB::raw("pesanan.Penggunaan_Poin * 100 as PenggunaanPoin"),
             "pesanan.Total as Total"
         )->leftJoin("customer", "pesanan.Customer_Email", "=", "customer.Email")
             ->leftJoin("alamat", "pesanan.Alamat_Id", "=", "alamat.Id")
@@ -287,12 +298,14 @@ class service_pesanan
                 "pesanan.Ongkos_Kirim",
                 "alamat.Jarak",
                 "pesanan.Total",
-                "pesanan.Poin_Didapat"
+                "pesanan.Poin_Didapat",
+                "pesanan.Penggunaan_Poin"
             )
             ->get();
 
         return $Nota;
     }
+
 
 
     public function getFullNota($NoNota)
