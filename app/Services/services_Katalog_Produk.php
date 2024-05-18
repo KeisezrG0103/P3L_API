@@ -188,4 +188,50 @@ class services_Katalog_Produk
         $hampers->Kuota = $this->getMinimumKuotaFromProdukInHampers($id, $date);
         return $hampers;
     }
+
+    public function getProdukByRequestandKuota($kategori)
+    {
+        $date = date('Y-m-d');
+        // days + 2
+        $date = date('Y-m-d', strtotime($date . ' + 2 days'));
+        if ($kategori != 'penitip') {
+            $produk = model_produk::select(
+                'produk.Id',
+                'produk.Nama',
+                'produk.Harga',
+                'produk.Gambar',
+                'produk.Stok',
+                'kategori.Kategori as Nama_Kategori',
+            )->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
+                ->where('kategori.Kategori', $kategori)
+                ->where('produk.Penitip_Id', null)
+                ->get();
+            foreach ($produk as $p) {
+                $p->Kuota = $this->GetKuotaProduk($date, $p->Id);
+                $p->Kuota = $this->cekQuotaProdukDalamHamper($date, $p->Id, $p->Kuota);
+            }
+
+            return $produk;
+        }
+
+        if ($kategori == 'penitip') {
+            $produk = model_produk::select(
+                'produk.Id',
+                'produk.Nama',
+                'produk.Harga',
+                'produk.Stok',
+                'produk.Gambar',
+                'kategori.Kategori as Nama_Kategori',
+            )->leftJoin('kategori', 'produk.Kategori_Id', '=', 'kategori.Id')
+                ->where('produk.Penitip_Id', '!=', null)
+                ->get();
+
+            //produk kuota to null because penitip can't be limited
+            foreach ($produk as $p) {
+                $p->Kuota = null;
+            }
+
+            return $produk;
+        }
+    }
 }

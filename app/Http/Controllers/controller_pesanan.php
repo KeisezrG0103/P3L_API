@@ -58,4 +58,10 @@ class controller_pesanan extends Controller
         $pesanan = $this->service->getFullNota($NoNota);
         return response()->json($pesanan);
     }
+
+    public function getPesananAndProdukOnGoing($email)
+    {
+        $pesanan = $this->service->getPesananAndProdukOnGoing($email);
+        return resource_pesanan::collection($pesanan);
+    }
 }

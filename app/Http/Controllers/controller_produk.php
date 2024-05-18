@@ -160,4 +160,12 @@ class controller_produk extends Controller
         $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
         return resource_produk::collection($produk_with_image);
     }
+
+    public function getProdukByRequestandKuota($kategori)
+    {
+        $produk = $this->service_katalog_produk->getProdukByRequestandKuota($kategori);
+        $produk_with_image = $this->service_utils->transformJsonWithImage($produk, 'produk');
+
+        return resource_produk::collection($produk_with_image);
+    }
 }

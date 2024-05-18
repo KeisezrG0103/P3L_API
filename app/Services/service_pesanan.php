@@ -188,6 +188,8 @@ class service_pesanan
         $pesanan->Penggunaan_Poin = $poinDigunakan;
         $totalBayar = $this->updateTotalBayar($poinDigunakan, $request['Total']);
         $pesanan->Total = $totalBayar;
+        $pesanan->Alamat_Id = $request['Alamat_Id'];
+        $pesanan->Is_Deliver = $request['Is_Deliver'];
         $pesanan->save();
     }
 
@@ -317,6 +319,39 @@ class service_pesanan
             'Nota' => $Nota,
             'DetailPesanan' => $DetailPesanan
         ];
+
+        return $data;
+    }
+
+    public function getPesananOnGoing($Email)
+    {
+        $pesanan = model_pesanan::select(
+            "pesanan.Id as NoNota",
+            "pesanan.Tanggal_Pesan as TanggalPesan",
+            "pesanan.Tanggal_Diambil as TanggalDiambil",
+            "pesanan.Status as Status"
+        )->where("Customer_Email", $Email)
+            ->whereNot("Status", "Selesai")->whereNot("Status", "Dibatalkan")->get();
+
+        return $pesanan;
+    }
+
+
+    public function getPesananAndProdukOnGoing($Email)
+    {
+        $pesanan = $this->getPesananOnGoing($Email);
+
+        $data = [];
+        foreach ($pesanan as $pes) {
+            $detailPesanan = $this->getDetailPesananByNota($pes->NoNota);
+            $data[] = [
+                'NoNota' => $pes->NoNota,
+                'TanggalPesan' => $pes->TanggalPesan,
+                'TanggalDiambil' => $pes->TanggalDiambil,
+                'Status' => $pes->Status,
+                'DetailPesanan' => $detailPesanan
+            ];
+        }
 
         return $data;
     }

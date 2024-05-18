@@ -49,6 +49,7 @@ class service_utils
         return $hampers_with_image;
     }
 
+
     public function getSingleImageUrl($data, $key)
     {
         $image = $this->getImage($key, $data->Gambar);

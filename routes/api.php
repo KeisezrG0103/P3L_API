@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\controller_alamat;
 use App\Http\Controllers\controller_customer;
 use App\Http\Controllers\controller_pesanan;
 use App\Http\Controllers\controller_forgot_password;
@@ -122,6 +123,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('getNotaById/{NoNota}', [controller_pesanan::class, 'getNotaById']);
 
     route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
+    route::get('getPesananAndProdukOnGoing/{Email}', [controller_pesanan::class, 'getPesananAndProdukOnGoing']);
+    route::get('getAlamat/{email}', [controller_alamat::class, 'getAlamat']);
+    route::post('addAlamat/{email}', [controller_alamat::class, 'addAlamat']);
 });
 
 // transaksi no 72
@@ -136,3 +140,4 @@ Route::get('getProdukInHampersWithKuota/{id}/{date}', [controller_produk::class,
 Route::get('getHampersByIdWithKuota/{id}/{date}', [controller_hampers::class, 'getHampersByIdWithKuota']);
 Route::get('getKuotaHampersById/{id}/{date}', [controller_hampers::class, 'getKuotaHampersById']);
 Route::post('AutomaticPresensi', [controller_presensi::class, 'AutomaticPresensi']);
+Route::get('getProdukByRequestandKuota/{kategori}', [controller_produk::class, 'getProdukByRequestandKuota']);
