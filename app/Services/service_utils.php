@@ -3,12 +3,15 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\JsonResponse;
 use Mockery\Undefined;
 
 class service_utils
 {
     public function saveImage($someRequest, $key)
     {
+
+
         $file = $someRequest['Gambar'];
 
         // compress image
@@ -20,6 +23,25 @@ class service_utils
         $someRequest['Gambar'] = $file_name;
 
         return $someRequest;
+    }
+
+    public function saveImageBayar($file, $key)
+    {
+     
+        if (!$file->isValid()) {
+            return response()->json([
+                'message' => 'The Gambar file is invalid.'
+            ], 400); 
+        }
+    
+        
+        $file_name = time() . '.' . $file->getClientOriginalExtension();
+    
+       
+        Storage::disk('public')->put($key . '/' . $file_name, file_get_contents($file));
+    
+      
+        return $file_name;
     }
 
     public function deleteImage($key, $file_name): void

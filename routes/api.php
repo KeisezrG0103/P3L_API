@@ -124,8 +124,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
     route::get('getPesananAndProdukOnGoing/{Email}', [controller_pesanan::class, 'getPesananAndProdukOnGoing']);
+    route::post('sendBuktiBayar/{id}', [controller_pesanan::class, 'sendBuktiPembayaran']);
     route::get('getAlamat/{email}', [controller_alamat::class, 'getAlamat']);
     route::post('addAlamat/{email}', [controller_alamat::class, 'addAlamat']);
+    
 });
 
 // transaksi no 72
