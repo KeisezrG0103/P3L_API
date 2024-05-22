@@ -17,7 +17,7 @@ class controller_pesanan extends Controller
 
     protected service_pesanan $service;
     protected service_proses_pesanan $serviceProses;
-    
+
     public function __construct(service_pesanan $service, service_proses_pesanan $serviceProses)
     {
         $this->service = $service;
@@ -77,7 +77,7 @@ class controller_pesanan extends Controller
 
     public function sendBuktiPembayaran(request_pembayaran $request, $id)
     {
-    
+
         $validator = Validator::make($request->all(), [
             'Bukti_Pembayaran' => ['required', 'mimes:jpg,png'],
         ]);
@@ -91,25 +91,31 @@ class controller_pesanan extends Controller
 
         $pesanan = model_pesanan::find($id);
 
-        
+
         if (!$pesanan) {
             return response()->json([
                 "message" => "Pesanan dengan ID $id tidak ditemukan."
             ], 404);
         }
 
-    
+
         $file_path = $request->file('Bukti_Pembayaran')->store('Bukti_Pembayaran', 'public');
 
-    
+
         $pesanan->update(['Bukti_Pembayaran' => url(Storage::url($file_path))]);
-        
+
 
         $pesanan->update(['Tanggal_Pelunasan' => Carbon::now('Asia/Jakarta')]);
         $pesanan->update(['Status_Pembayaran' => 'Sudah Bayar']);
         $pesanan->update(['Status' => 'Menunggu Konfirmasi Pembayaran']);
 
-        
+
         return new resource_pesanan($pesanan);
+    }
+
+    public function getDaftarPesananYangDiprosesHariIni($tanggal_besok)
+    {
+        $pesanan = $this->serviceProses->getDaftarPesananYangDiprosesHariIni($tanggal_besok);
+        return resource_pesanan::collection($pesanan);
     }
 }
