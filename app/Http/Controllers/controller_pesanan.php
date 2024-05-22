@@ -6,7 +6,7 @@ use App\Http\Requests\request_pembayaran;
 use App\Http\Requests\request_pesanan;
 use App\Http\Resources\resource_pesanan;
 use App\Services\service_pesanan;
-use App\Services\service_utils;
+use App\Services\service_proses_pesanan;
 use App\Models\model_pesanan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +16,14 @@ class controller_pesanan extends Controller
 {
 
     protected service_pesanan $service;
-    protected service_utils $service_utils;
-    public function __construct(service_pesanan $service, service_utils $service_utils)
+    protected service_proses_pesanan $serviceProses;
+    
+    public function __construct(service_pesanan $service, service_proses_pesanan $serviceProses)
     {
         $this->service = $service;
-        $this->service_utils = $service_utils;
+        $this->serviceProses = $serviceProses;
     }
+
 
     public function getHistoryByEmail(string $id)
     {
@@ -73,8 +75,6 @@ class controller_pesanan extends Controller
         return resource_pesanan::collection($pesanan);
     }
 
- 
-
     public function sendBuktiPembayaran(request_pembayaran $request, $id)
     {
     
@@ -112,5 +112,4 @@ class controller_pesanan extends Controller
         
         return new resource_pesanan($pesanan);
     }
-    
 }
