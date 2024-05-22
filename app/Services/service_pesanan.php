@@ -329,7 +329,9 @@ class service_pesanan
             "pesanan.Id as NoNota",
             "pesanan.Tanggal_Pesan as TanggalPesan",
             "pesanan.Tanggal_Diambil as TanggalDiambil",
-            "pesanan.Status as Status"
+            "pesanan.Status as Status",
+            "pesanan.Total as Total",
+            "pesanan.Bukti_Pembayaran as Bukti"
         )->where("Customer_Email", $Email)
             ->whereNot("Status", "Selesai")->whereNot("Status", "Dibatalkan")->get();
 
@@ -349,6 +351,8 @@ class service_pesanan
                 'TanggalPesan' => $pes->TanggalPesan,
                 'TanggalDiambil' => $pes->TanggalDiambil,
                 'Status' => $pes->Status,
+                'Total' => $pes->Total,
+                'Bukti' => $pes->Bukti,
                 'DetailPesanan' => $detailPesanan
             ];
         }

@@ -24,26 +24,7 @@ class service_utils
 
         return $someRequest;
     }
-
-    public function saveImageBayar($file, $key)
-    {
-     
-        if (!$file->isValid()) {
-            return response()->json([
-                'message' => 'The Gambar file is invalid.'
-            ], 400); 
-        }
     
-        
-        $file_name = time() . '.' . $file->getClientOriginalExtension();
-    
-       
-        Storage::disk('public')->put($key . '/' . $file_name, file_get_contents($file));
-    
-      
-        return $file_name;
-    }
-
     public function deleteImage($key, $file_name): void
     {
         Storage::disk('public')->delete($key . '/' . $file_name);

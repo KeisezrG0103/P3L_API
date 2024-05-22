@@ -8,7 +8,9 @@ use App\Http\Resources\resource_pesanan;
 use App\Services\service_pesanan;
 use App\Services\service_utils;
 use App\Models\model_pesanan;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class controller_pesanan extends Controller
 {
@@ -75,39 +77,40 @@ class controller_pesanan extends Controller
 
     public function sendBuktiPembayaran(request_pembayaran $request, $id)
     {
-      
+    
         $validator = Validator::make($request->all(), [
             'Bukti_Pembayaran' => ['required', 'mimes:jpg,png'],
         ]);
-    
-      
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()->first()
-            ], 400); 
+            ], 400);
         }
-    
-    
+
+
         $pesanan = model_pesanan::find($id);
-    
+
+        
         if (!$pesanan) {
             return response()->json([
                 "message" => "Pesanan dengan ID $id tidak ditemukan."
             ], 404);
         }
+
     
+        $file_path = $request->file('Bukti_Pembayaran')->store('Bukti_Pembayaran', 'public');
+
+    
+        $pesanan->update(['Bukti_Pembayaran' => url(Storage::url($file_path))]);
         
-        if ($request->hasFile('Bukti_Pembayaran')) {
-          
-            $file_name = $this->service_utils->saveImageBayar($request->file('Bukti_Pembayaran'), 'Bukti_Pembayaran');
-    
-            $pesanan->update(['Bukti_Pembayaran' => $file_name]);
-        }
-    
-       
+
+        $pesanan->update(['Tanggal_Pelunasan' => Carbon::now('Asia/Jakarta')]);
+        $pesanan->update(['Status_Pembayaran' => 'Sudah Bayar']);
+        $pesanan->update(['Status' => 'Menunggu Konfirmasi Pembayaran']);
+
+        
         return new resource_pesanan($pesanan);
     }
     
-    
-
 }
