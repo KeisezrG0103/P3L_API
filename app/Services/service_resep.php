@@ -40,4 +40,9 @@ class service_resep
         $resep = model_resep::where('Produk_Id', $id)->first();
         $resep->delete();
     }
+
+    public function readResep()
+    {
+        return model_resep::all();
+    }
 }

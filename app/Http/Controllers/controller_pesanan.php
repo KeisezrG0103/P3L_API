@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\request_pesanan;
 use App\Http\Resources\resource_pesanan;
 use App\Services\service_pesanan;
+use App\Services\service_proses_pesanan;
 
 class controller_pesanan extends Controller
 {
 
     protected service_pesanan $service;
-    public function __construct(service_pesanan $service)
+    protected service_proses_pesanan $serviceProses;
+    public function __construct(service_pesanan $service, service_proses_pesanan $serviceProses)
     {
         $this->service = $service;
+        $this->serviceProses = $serviceProses;
     }
+
 
     public function getHistoryByEmail(string $id)
     {
@@ -62,6 +66,12 @@ class controller_pesanan extends Controller
     public function getPesananAndProdukOnGoing($email)
     {
         $pesanan = $this->service->getPesananAndProdukOnGoing($email);
+        return resource_pesanan::collection($pesanan);
+    }
+
+    public function getDaftarPesananYangDiprosesHariIni($tanggalBesok)
+    {
+        $pesanan = $this->serviceProses->getDaftarPesananYangDiprosesHariIni($tanggalBesok);
         return resource_pesanan::collection($pesanan);
     }
 }

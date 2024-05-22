@@ -21,6 +21,7 @@ use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
 use App\Http\Controllers\controller_resep;
 use App\Http\Controllers\controller_detail_pemesanan;
+use App\Http\Controllers\controller_laporan;
 
 Route::post('register', [controller_auth::class, 'register']);
 Route::post('login', [controller_auth::class, 'login'])->withoutMiddleware('Role');
@@ -77,6 +78,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         Route::get('history/{email}', [controller_pesanan::class, 'getHistoryByEmail']);
         Route::get('history', [controller_pesanan::class, 'getAllHistoryPesanan']);
+
+        Route::get('resep', [controller_resep::class, 'getResep']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
@@ -105,11 +108,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('pengeluaran', [controller_pengeluaran::class, 'readPengeluaran']);
         Route::get('pengeluaran/{id_pengeluaran}', [controller_pengeluaran::class, 'getById']);
         Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
+
+        Route::get('getDaftarPesananYangDiprosesHariIni/{tanggalBesok}', [controller_pesanan::class, 'getDaftarPesananYangDiprosesHariIni']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
         Route::get('bahan_baku', [controller_bahan_baku::class, 'readBahanBaku']);
     });
+
+    Route::group(['middleware' => ['can:isMOorOwner']], function () {
+        Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
+        Route::get('laporan_produk_per_bulan/{bulan}', [controller_laporan::class, 'laporanProdukPerBulan']);
+    });
+
     Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
 
     Route::get('customer/{Email}', [controller_customer::class, 'getById']);

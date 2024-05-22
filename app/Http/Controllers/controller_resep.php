@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\resource_resep;
 use Illuminate\Http\Request;
 use App\Models\model_resep;
 use App\Models\model_produk;
@@ -18,10 +19,15 @@ class controller_resep extends Controller
 
     public function generateResepAllProduk()
     {
-            $this->service_resep->generateResepAllProduk();
-            return response()->json([
-                'message' => 'Success'
-            ]);
+        $this->service_resep->generateResepAllProduk();
+        return response()->json([
+            'message' => 'Success'
+        ]);
+    }
 
+    public function getResep()
+    {
+        $resep = $this->service_resep->readResep();
+        return resource_resep::collection($resep);
     }
 }
