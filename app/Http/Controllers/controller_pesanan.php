@@ -76,6 +76,12 @@ class controller_pesanan extends Controller
         return resource_pesanan::collection($pesanan);
     }
 
+    public function getPesananAndProdukDitolak($email)
+    {
+        $pesanan = $this->service->getPesananAndProdukDitolak($email);
+        return resource_pesanan::collection($pesanan);
+    }
+
     public function sendBuktiPembayaran(request_pembayaran $request, $id)
     {
 

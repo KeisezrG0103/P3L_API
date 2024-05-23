@@ -136,6 +136,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
     route::get('getPesananAndProdukOnGoing/{Email}', [controller_pesanan::class, 'getPesananAndProdukOnGoing']);
+    route::get('getPesananAndProdukDitolak/{Email}', [controller_pesanan::class, 'getPesananAndProdukDitolak']);
     route::post('sendBuktiBayar/{id}', [controller_pesanan::class, 'sendBuktiPembayaran']);
     Route::get('daftarPesananToConfirm', [controller_konfirmasi_pembelian::class, 'getDaftarPesananToConfirm']);
     route::put('konfirmasiPesanan/{id}', [controller_konfirmasi_pembelian::class, 'konfirmasiPesanan']);
