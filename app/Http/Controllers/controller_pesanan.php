@@ -18,6 +18,7 @@ class controller_pesanan extends Controller
     protected service_pesanan $service;
     protected service_proses_pesanan $serviceProses;
 
+
     public function __construct(service_pesanan $service, service_proses_pesanan $serviceProses)
     {
         $this->service = $service;
@@ -117,5 +118,11 @@ class controller_pesanan extends Controller
     {
         $pesanan = $this->serviceProses->getDaftarPesananYangDiprosesHariIni($tanggal_besok);
         return resource_pesanan::collection($pesanan);
+    }
+
+    public function prosesPesanan($NoNota)
+    {
+        $pesanan = $this->serviceProses->prosesPesanan($NoNota);
+        return response()->json($pesanan);
     }
 }

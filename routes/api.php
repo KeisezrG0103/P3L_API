@@ -138,7 +138,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     route::post('sendBuktiBayar/{id}', [controller_pesanan::class, 'sendBuktiPembayaran']);
     route::get('getAlamat/{email}', [controller_alamat::class, 'getAlamat']);
     route::post('addAlamat/{email}', [controller_alamat::class, 'addAlamat']);
-    
 });
 
 // transaksi no 72
@@ -154,3 +153,8 @@ Route::get('getHampersByIdWithKuota/{id}/{date}', [controller_hampers::class, 'g
 Route::get('getKuotaHampersById/{id}/{date}', [controller_hampers::class, 'getKuotaHampersById']);
 Route::post('AutomaticPresensi', [controller_presensi::class, 'AutomaticPresensi']);
 Route::get('getProdukByRequestandKuota/{kategori}', [controller_produk::class, 'getProdukByRequestandKuota']);
+
+
+//debug only
+Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getResepFromDetailPesanan']);
+Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
