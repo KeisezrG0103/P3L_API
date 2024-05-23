@@ -30,6 +30,11 @@ class service_konfirmasi_pembelian
     public function konfirmasiPesanan($id)
     {
         $pesanan = model_pesanan::findOrFail($id);
+
+        $customer = model_customer::where('Email', $pesanan->Customer_Email)->first();
+
+        $customer->update(['Total_Poin' => $customer->Total_Poin + $pesanan->Poin_Didapat]);
+
         $pesanan->update(['Status' => 'Diterima']);
     }
 
