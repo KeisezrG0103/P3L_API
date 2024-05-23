@@ -21,6 +21,7 @@ use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
 use App\Http\Controllers\controller_resep;
 use App\Http\Controllers\controller_detail_pemesanan;
+use App\Http\Controllers\controller_konfirmasi_pembelian;
 use App\Http\Controllers\controller_laporan;
 
 Route::post('register', [controller_auth::class, 'register']);
@@ -136,6 +137,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     route::get('PesananSelesaiWithDetailPesananAndTanggal/{Email}', [controller_pesanan_selesai::class, 'getPesananSelesaiWithDetailPesananAndTanggal']);
     route::get('getPesananAndProdukOnGoing/{Email}', [controller_pesanan::class, 'getPesananAndProdukOnGoing']);
     route::post('sendBuktiBayar/{id}', [controller_pesanan::class, 'sendBuktiPembayaran']);
+    Route::get('daftarPesananToConfirm', [controller_konfirmasi_pembelian::class, 'getDaftarPesananToConfirm']);
+    route::put('konfirmasiPesanan/{id}', [controller_konfirmasi_pembelian::class, 'konfirmasiPesanan']);
+    route::put('tolakPesanan/{id}', [controller_konfirmasi_pembelian::class, 'tolakPesanan']);
     route::get('getAlamat/{email}', [controller_alamat::class, 'getAlamat']);
     route::post('addAlamat/{email}', [controller_alamat::class, 'addAlamat']);
     
