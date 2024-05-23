@@ -335,7 +335,7 @@ class service_pesanan
             "pesanan.Total as Total",
             "pesanan.Bukti_Pembayaran as Bukti"
         )->where("Customer_Email", $Email)
-            ->whereNot("Status", "Selesai")->whereNot("Status", "Dibatalkan")->get();
+            ->whereNot("Status", "Selesai")->whereNot("Status", "Ditolak")->get();
 
         return $pesanan;
     }
@@ -356,6 +356,42 @@ class service_pesanan
                 'Total' => $pes->Total,
                 'Bukti' => $pes->Bukti,
                 'DetailPesanan' => $detailPesanan
+            ];
+        }
+
+        return $data;
+    }
+
+    public function getPesananDitolak($Email)
+    {
+        $pesanan = model_pesanan::select(
+            "pesanan.Id as NoNota",
+            "pesanan.Tanggal_Pesan as TanggalPesan",
+            "pesanan.Tanggal_Diambil as TanggalDiambil",
+            "pesanan.Status as Status",
+            "pesanan.Total as Total",
+            "pesanan.Bukti_Pembayaran as Bukti"
+        )->where("Customer_Email", $Email)
+            ->where("Status", "Ditolak")->get();
+
+        return $pesanan;
+    }
+
+    public function getPesananAndProdukDitolak($Email)
+    {
+        $pesanan = $this->getPesananDitolak($Email);
+
+        $data = [];
+        foreach ($pesanan as $pes) {
+            $detailPesanan = $this->getDetailPesananByNota($pes->NoNota);
+            $data[] = [
+                'NoNota' => $pes->NoNota,
+                'TanggalPesan' => $pes->TanggalPesan,
+                'TanggalDiambil' => $pes->TanggalDiambil,
+                'Status' => $pes->Status,
+                'Total' => $pes->Total,
+                'Bukti' => $pes->Bukti,
+                'Detail_Pesanan' => $detailPesanan
             ];
         }
 
