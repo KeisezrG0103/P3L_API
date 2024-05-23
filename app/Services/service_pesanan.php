@@ -136,13 +136,15 @@ class service_pesanan
     {
         $poin = $this->service_Poin->getPoinPerCustomer($email);
 
-        $poinDigunakan = min(ceil($total / 100), $poin);
+        $poinDigunakan = min(floor($total / 100), $poin);
 
         $sisaPoin = $poin - $poinDigunakan;
+
         $this->service_Poin->setPoinPerCustomer($email, $sisaPoin);
 
         return $poinDigunakan;
     }
+
 
     public function updateTotalBayar($poinDigunakan, $total): float
     {
