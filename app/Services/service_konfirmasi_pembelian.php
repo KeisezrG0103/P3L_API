@@ -46,9 +46,8 @@ class service_konfirmasi_pembelian
 
         $customer = model_customer::where('Email', $pesanan->Customer_Email)->first();
 
-        $customer->update(['Total_Saldo' => $pesanan->Total]);
+        $customer->update(['Total_Saldo' => $customer->Total_Saldo + $pesanan->Total]);
 
-       
         foreach ($details as $detail) {
             $produk = model_produk::findOrFail($detail->Produk_Id);
             $produk->update([
