@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\model_bahan_baku;
 use App\Models\model_detail_hampers;
+use App\Models\model_detail_resep;
 use Carbon\Carbon;
 use App\Models\model_pesanan;
 use Illuminate\Support\Facades\DB;
@@ -160,5 +162,78 @@ class service_proses_pesanan
         }
 
         return $ProsesPesanan;
+    }
+
+    public function getDetailResepAndKebutuhanById($id, $kebutuhan)
+    {
+        $detail_resep = model_detail_resep::select(
+            'resep.Id as Id_Resep',
+            'bahan_baku.Nama',
+            DB::raw('SUM(detail_resep.qty * ' . $kebutuhan . ') as Jumlah'),
+            'detail_resep.satuan',
+            'bahan_baku.Id as Id_Bahan_Baku'
+        )->leftJoin('bahan_baku', 'detail_resep.Bahan_Baku_Id', '=', 'bahan_baku.Id')
+            ->leftJoin('resep', 'detail_resep.Resep_Id', '=', 'resep.Id')
+            ->where('detail_resep.Resep_Id', '=', $id)
+            ->groupBy('detail_resep.Bahan_Baku_Id', 'detail_resep.satuan', 'resep.Id', 'bahan_baku.Nama', 'resep.Nama', 'bahan_baku.Id')
+            ->get();
+
+        return $detail_resep;
+    }
+
+
+
+    public function getDetailResepByPesanan($noNota)
+    {
+        $resep = $this->prosesPesanan($noNota);
+
+        $detailResep = [];
+        foreach ($resep as $r) {
+            $detailResep[] = $this->getDetailResepAndKebutuhanById($r->Id, $r->Jumlah_Proses);
+        }
+        return $detailResep;
+    }
+
+    public function getBahanBakubyId($id)
+    {
+        $bahan_baku = model_bahan_baku::select(
+            'bahan_baku.Id',
+            'bahan_baku.Nama',
+            'bahan_baku.Qty',
+            'bahan_baku.Satuan'
+        )->where('bahan_baku.Id', $id)
+            ->get();
+
+        return $bahan_baku;
+    }
+
+    public function countKebutuhanBahanBaku($jumlah)
+    {
+        $kebutuhan = $jumlah;
+        return $kebutuhan;
+    }
+
+    public function compareStokBahanBakuDanKebutuhan($noNota)
+    {
+        $pesanan = $this->getDetailResepByPesanan($noNota);
+
+        $stokBahanBaku = [];
+
+        foreach ($pesanan as $p) {
+            foreach ($p as $b) {
+
+                $bahan_baku = $this->getBahanBakubyId($b->Id_Bahan_Baku);
+                foreach ($bahan_baku as $bb) {
+                    $kebutuhan = $this->countKebutuhanBahanBaku($b->Jumlah);
+                    if ($bb->Qty < $kebutuhan) {
+                        $bb->Kebutuhan = $kebutuhan;
+                        $bb->Kekurangan = $kebutuhan - $bb->Qty;
+                        $stokBahanBaku[] = $bb;
+                    }
+                }
+            }
+        }
+
+        return $stokBahanBaku;
     }
 }

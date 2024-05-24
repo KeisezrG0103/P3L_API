@@ -163,3 +163,5 @@ Route::get('getProdukByRequestandKuota/{kategori}', [controller_produk::class, '
 //debug only
 Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getResepFromDetailPesanan']);
 Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
+Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
+Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);

@@ -7,6 +7,7 @@ use App\Models\model_produk;
 
 class service_resep
 {
+
     public function generateResepAllProduk()
     {
         $product = model_produk::all();

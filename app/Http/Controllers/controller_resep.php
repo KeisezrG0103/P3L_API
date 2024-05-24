@@ -42,4 +42,38 @@ class controller_resep extends Controller
             'resep' => $resep
         ]);
     }
+
+    public function getDetailResepByPesanan($nota)
+    {
+        try {
+            $deyail_pesanan = $this->service_proses_pesanan->getDetailResepByPesanan($nota);
+            return response()->json([
+                'detail_pesanan' => $deyail_pesanan
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function GetKekuranganBahanBaku($noNota)
+    {
+        try {
+            $compare = $this->service_proses_pesanan->compareStokBahanBakuDanKebutuhan($noNota);
+            if (count($compare) == 0) {
+                return response()->json([
+                    'message' => 'Semua bahan baku cukup'
+                ]);
+            }
+
+            return response()->json([
+                'Kekurangan' => $compare
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
 }

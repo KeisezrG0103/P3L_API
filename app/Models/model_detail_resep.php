@@ -16,15 +16,12 @@ class model_detail_resep extends Model
     ];
 
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $fillable = [
         'Resep_Id',
         'Bahan_Baku_Id',
-        'Qty',
-        'Satuan'
+        'qty',
+        'satuan'
     ];
-
-    
-
-
 }
