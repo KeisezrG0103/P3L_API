@@ -34,28 +34,24 @@ class service_konfirmasi_pembelian
         $pesanan = model_pesanan::findOrFail($id);
         
       
-        $details = model_detail_transaksi::where('Pesanan_Id', $id)->get();
+
+        $customer = model_customer::where('Email', $pesanan->Customer_Email)->first();
+
+    
+        $customer->update(['Total_Poin' => $customer->Total_Poin + $pesanan->Poin_Didapat]);
         
        
-        foreach ($details as $detail) {
-            $produk = model_produk::findOrFail($detail->Produk_Id);
-            
          
-            if ($produk->IsPreOrder == 1) {
-                $pesanan->update(['Status' => 'Diterima']);
-               
-                break;
-            }
-        }
-        
-        // Jika status pesanan belum diubah menjadi 'Diterima', maka atur statusnya sesuai dengan kondisi is-deliver
-        if ($pesanan->Status !== 'Diterima') {
+        if ($pesanan->IsPreOrder == 1) {
+             $pesanan->update(['Status' => 'Diterima']); 
+        } else {
             if ($pesanan->Is_Deliver == 1) {
                 $pesanan->update(['Status' => 'Siap dideliver']);
             } else {
                 $pesanan->update(['Status' => 'Siap dipickup']);
             }
         }
+        
     }
 
     
@@ -82,7 +78,7 @@ class service_konfirmasi_pembelian
             $produk = model_produk::findOrFail($detail->Produk_Id);
             
            
-            if (!$produk->IsPreOrder) {
+            if (!$pesanan->IsPreOrder == 1) {
                
                 $produk->update([
                     'Stok' => $produk->Stok + $detail->Total_Produk
