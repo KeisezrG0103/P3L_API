@@ -12,6 +12,7 @@ class model_history_bahan_baku extends Model
     protected $table = 'history_bahan_baku';
     protected $primaryKey = 'Id';
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $fillable = [
         'Tanggal_Digunakan',

@@ -7,6 +7,7 @@ use App\Models\model_pesanan;
 use Illuminate\Http\Request;
 use App\Models\model_resep;
 use App\Models\model_produk;
+use App\Services\service_history_bahan_baku;
 use App\Services\service_proses_pesanan;
 use App\Services\service_resep;
 
@@ -14,11 +15,13 @@ class controller_resep extends Controller
 {
     private service_resep $service_resep;
     private service_proses_pesanan $service_proses_pesanan;
+    private service_history_bahan_baku $service_history_bahan_baku;
 
-    public function __construct(service_resep $service_resep, service_proses_pesanan $service_proses_pesanan)
+    public function __construct(service_resep $service_resep, service_proses_pesanan $service_proses_pesanan, service_history_bahan_baku $service_history_bahan_baku)
     {
         $this->service_resep = $service_resep;
         $this->service_proses_pesanan = $service_proses_pesanan;
+        $this->service_history_bahan_baku = $service_history_bahan_baku;
     }
 
 
@@ -92,6 +95,9 @@ class controller_resep extends Controller
             ]);
         } else {
             if (count($compare) == 0) {
+                $this->service_proses_pesanan->CatatPemakaianBahanBaku($noNota);
+                $this->service_proses_pesanan->KurangiStokBahanBaku($noNota);
+
                 $pesanan->Status = 'Diproses';
                 $pesanan->save();
                 return response()->json([
@@ -103,5 +109,13 @@ class controller_resep extends Controller
                 ]);
             }
         }
+    }
+
+    public function getHistoryBahanBakuByBahanAndTanggal($Bahan_Id, $Tanggal_Digunakan)
+    {
+        $historyBahanBaku = $this->service_history_bahan_baku->getHistoryBahanBakuByBahanAndTanggal($Bahan_Id, $Tanggal_Digunakan);
+        return response()->json([
+            'history_bahan_baku' => $historyBahanBaku
+        ]);
     }
 }

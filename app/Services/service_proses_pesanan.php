@@ -14,6 +14,16 @@ use App\Models\model_resep;
 
 class service_proses_pesanan
 {
+
+
+    private service_history_bahan_baku $service_history_bahan_baku;
+
+    public function __construct(service_history_bahan_baku $service_history_bahan_baku)
+    {
+        $this->service_history_bahan_baku = $service_history_bahan_baku;
+    }
+
+
     public function getDaftarPesananYangDiprosesHariIni($tanggalBesok)
     {
         $pesanan = model_pesanan::select(
@@ -235,5 +245,50 @@ class service_proses_pesanan
         }
 
         return $stokBahanBaku;
+    }
+
+
+
+
+    public function CatatPemakaianBahanBaku($noNota)
+    {
+        $pesanan = $this->getDetailResepByPesanan($noNota);
+
+        foreach ($pesanan as $p) {
+            foreach ($p as $b) {
+                $bahan_baku = $this->getBahanBakubyId($b->Id_Bahan_Baku);
+                foreach ($bahan_baku as $bb) {
+                    $kebutuhan = $this->countKebutuhanBahanBaku($b->Jumlah);
+                    $today = Carbon::now();
+
+                    $today = $today->format('Y-m-d');
+
+                    $data = [
+                        'Bahan_Baku_Id' => $bb->Id,
+                        'Tanggal_Digunakan' => $today,
+                        'Jumlah_Penggunaan' => $kebutuhan,
+                        'Satuan' => $bb->Satuan
+                    ];
+
+                    $this->service_history_bahan_baku->CatatPemakaianBahanBaku($data);
+                }
+            }
+        }
+    }
+
+    public function KurangiStokBahanBaku($noNota)
+    {
+        $pesanan = $this->getDetailResepByPesanan($noNota);
+
+        foreach ($pesanan as $p) {
+            foreach ($p as $b) {
+                $bahan_baku = $this->getBahanBakubyId($b->Id_Bahan_Baku);
+                foreach ($bahan_baku as $bb) {
+                    $kebutuhan = $this->countKebutuhanBahanBaku($b->Jumlah);
+                    $bb->Qty = $bb->Qty - $kebutuhan;
+                    $bb->save();
+                }
+            }
+        }
     }
 }
