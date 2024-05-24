@@ -148,9 +148,13 @@ class service_proses_pesanan
                 $r->Jumlah_Proses = $this->convertSetengahLoyangKeSatuLoyang($r->Jumlah);
                 $r->sisa = false;
                 $ProsesPesanan[] = $r;
-            } else {
+            } else if ($this->cekProdukSetengahLoyang($r->Nama_Produk_asli) && $r->Jumlah == 1) {
                 $r->Jumlah_Proses = $r->Jumlah;
                 $r->sisa = true;
+                $ProsesPesanan[] = $r;
+            } else {
+                $r->Jumlah_Proses = $r->Jumlah;
+                $r->sisa = false;
                 $ProsesPesanan[] = $r;
             }
         }
