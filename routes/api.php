@@ -21,6 +21,7 @@ use App\Http\Controllers\controller_presensi;
 use App\Http\Controllers\controller_transaksi_pesanan;
 use App\Http\Controllers\controller_resep;
 use App\Http\Controllers\controller_detail_pemesanan;
+use App\Http\Controllers\controller_history_bahan_baku;
 use App\Http\Controllers\controller_konfirmasi_pembelian;
 use App\Http\Controllers\controller_laporan;
 
@@ -112,6 +113,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         Route::get('getDaftarPesananYangDiprosesHariIni/{tanggalBesok}', [controller_pesanan::class, 'getDaftarPesananYangDiprosesHariIni']);
         Route::post('changeStatusToDiproses/{noNota}', [controller_resep::class, 'changeStatusToProses']);
+
+        route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -166,4 +169,8 @@ Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getR
 Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
 Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
 Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);
-Route::post('changeStatusToProses/{noNota}', [controller_resep::class, 'changeStatusToProses']);
+
+
+
+
+route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);

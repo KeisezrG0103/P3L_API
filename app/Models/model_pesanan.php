@@ -35,7 +35,6 @@ class model_pesanan extends Model
         'Jasa_Pengiriman',
         'created_at',
         'updated_at',
+        'IsPreOrder',
     ];
-
-
 }
