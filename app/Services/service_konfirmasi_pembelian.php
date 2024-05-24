@@ -30,89 +30,69 @@ class service_konfirmasi_pembelian
 
     public function konfirmasiPesanan($id)
     {
+       
         $pesanan = model_pesanan::findOrFail($id);
+        
+      
         $details = model_detail_transaksi::where('Pesanan_Id', $id)->get();
-        $customer = model_customer::where('Email', $pesanan->Customer_Email)->first();
-    
-
-        $customer->update(['Total_Poin' => $customer->Total_Poin + $pesanan->Poin_Didapat]);
-    
-        $readyStock = false;
-        $preorderExists = false;
-        $hamperExists = false;
-    
+        
+       
         foreach ($details as $detail) {
             $produk = model_produk::findOrFail($detail->Produk_Id);
             
-          
-            $stokSebelumPembelian = $produk->Stok + $detail->Total_Produk;
-            
-            if ($stokSebelumPembelian != 0) {
-                $readyStock = true;
-            }
-    
-          
-            if ($stokSebelumPembelian == 0) {
-                $preorderExists = true;
-            }
-    
-           
-            if ($detail->Hampers_Id != null) {
-                $hamperExists = true;
-            }
-    
          
+            if ($produk->IsPreOrder == 1) {
+                $pesanan->update(['Status' => 'Diterima']);
+               
+                break;
+            }
         }
-    
-      
-        if ($hamperExists || $preorderExists) {
-            $pesanan->update(['Status' => 'Diterima']);
-        } elseif ($readyStock) {
-            if ($pesanan->IsDeliver == 1) {
+        
+        // Jika status pesanan belum diubah menjadi 'Diterima', maka atur statusnya sesuai dengan kondisi is-deliver
+        if ($pesanan->Status !== 'Diterima') {
+            if ($pesanan->Is_Deliver == 1) {
                 $pesanan->update(['Status' => 'Siap dideliver']);
             } else {
                 $pesanan->update(['Status' => 'Siap dipickup']);
             }
         }
     }
+
     
     
     
 
     public function tolakPesanan($id)
     {
-      
-        $pesanan = model_pesanan::findOrFail($id);
-    
        
+        $pesanan = model_pesanan::findOrFail($id);
+
+     
         $details = model_detail_transaksi::where('Pesanan_Id', $id)->get();
-    
+
         
         $customer = model_customer::where('Email', $pesanan->Customer_Email)->first();
-    
-      
+
+        
         $customer->update(['Total_Saldo' => $customer->Total_Saldo + $pesanan->Total]);
-    
+
         
         foreach ($details as $detail) {
-           
-            $produk = model_produk::findOrFail($detail->Produk_Id);
-    
-         
-            $stokSebelumPembelian = $produk->Stok + $detail->Total_Produk;
-    
           
-            if ($stokSebelumPembelian > 0) {
+            $produk = model_produk::findOrFail($detail->Produk_Id);
+            
+           
+            if (!$produk->IsPreOrder) {
                
                 $produk->update([
                     'Stok' => $produk->Stok + $detail->Total_Produk
                 ]);
             }
         }
-        
-     
+
+      
         $pesanan->update(['Status' => 'Ditolak']);
     }
-    
+
 }
 
