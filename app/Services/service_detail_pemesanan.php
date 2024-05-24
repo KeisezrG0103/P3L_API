@@ -45,9 +45,7 @@ class service_detail_pemesanan
 
             if ($this->isPenitip($request['Produk_Id'])) {
                 $this->kurangiStok($request['Produk_Id'], $request['Total_Produk']);
-            }
-
-            if ($this->CekStokProdukBukanPenitip($request['Produk_Id'], $request['Total_Produk']) > 0) {
+            } else if ($this->CekStokProdukBukanPenitip($request['Produk_Id'], $request['Total_Produk']) > 0) {
                 $this->kurangiStok($request['Produk_Id'], $request['Total_Produk']);
             }
         } else if (isset($request['Hampers_Id']) && $request['Hampers_Id'] !== null) {
