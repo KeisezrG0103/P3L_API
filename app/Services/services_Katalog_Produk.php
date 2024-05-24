@@ -17,15 +17,22 @@ class services_Katalog_Produk
         $pesanan = model_pesanan::select(
             'pesanan.Id',
             'detail_transaksi.Produk_Id',
+            'produk.Nama',
             'detail_transaksi.Total_Produk',
         )->where('pesanan.Tanggal_Diambil', $date)->where('detail_transaksi.Produk_Id', $id_produk)
             ->where('pesanan.Status', '!=', 'Ditolak')->where('pesanan.Status', '!=', 'Dibatalkan')
             ->join('detail_transaksi', 'pesanan.Id', '=', 'detail_transaksi.Pesanan_Id')
+            ->join('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
             ->get();
 
         $total = 0;
 
         foreach ($pesanan as $p) {
+
+            if (preg_match('/box|card|tas/i', $p->Nama)) {
+                continue;
+            }
+
             $total += $p->Total_Produk;
         }
 
@@ -45,20 +52,26 @@ class services_Katalog_Produk
             'detail_transaksi.Hampers_Id',
             'detail_transaksi.Total_Produk',
             'detail_hampers.Produk_Id',
+            'produk.Nama',
             'detail_hampers.Jumlah',
             DB::raw('SUM(detail_hampers.Jumlah * detail_transaksi.Total_Produk) as Total_Terpakai')
         )
             ->join('detail_transaksi', 'pesanan.Id', '=', 'detail_transaksi.Pesanan_Id')
             ->join('detail_hampers', 'detail_transaksi.Hampers_Id', '=', 'detail_hampers.Hampers_Id')
+            ->join('produk', 'detail_hampers.Produk_Id', '=', 'produk.Id')
             ->where('pesanan.Tanggal_Diambil', $date)
             ->where('detail_hampers.Produk_Id', $id_produk)
             ->where('pesanan.Status', '!=', 'Ditolak')->where('pesanan.Status', '!=', 'Dibatalkan')
-            ->groupBy('pesanan.Id', 'detail_transaksi.Hampers_Id', 'detail_hampers.Produk_Id', 'detail_transaksi.Total_Produk', 'detail_hampers.Jumlah')
+            ->groupBy('pesanan.Id', 'detail_transaksi.Hampers_Id', 'detail_hampers.Produk_Id', 'detail_transaksi.Total_Produk', 'detail_hampers.Jumlah', 'produk.Nama')
             ->get();
 
         $total = 0;
 
         foreach ($pesanan as $p) {
+            if (preg_match('/box|card|tas/i', $p->Nama)) {
+                continue;
+            }
+
             $total += $p->Total_Terpakai;
         }
 
@@ -167,6 +180,7 @@ class services_Katalog_Produk
         foreach ($produk as $p) {
             $min = $p->Kuota < $min ? $p->Kuota : $min;
         }
+
 
         return $min;
     }
