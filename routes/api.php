@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('pengeluaran_nama/{nama}', [controller_pengeluaran::class, 'getByNama']);
 
         Route::get('getDaftarPesananYangDiprosesHariIni/{tanggalBesok}', [controller_pesanan::class, 'getDaftarPesananYangDiprosesHariIni']);
+        Route::post('changeStatusToDiproses/{noNota}', [controller_resep::class, 'changeStatusToProses']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -165,3 +166,4 @@ Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getR
 Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
 Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
 Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);
+Route::post('changeStatusToProses/{noNota}', [controller_resep::class, 'changeStatusToProses']);

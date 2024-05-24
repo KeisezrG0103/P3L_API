@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\resource_resep;
+use App\Models\model_pesanan;
 use Illuminate\Http\Request;
 use App\Models\model_resep;
 use App\Models\model_produk;
@@ -68,12 +69,39 @@ class controller_resep extends Controller
             }
 
             return response()->json([
+                'message' => 'Ada bahan baku yang kurang',
                 'Kekurangan' => $compare
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ]);
+        }
+    }
+
+
+
+    public function changeStatusToProses($noNota)
+    {
+        $pesanan = model_pesanan::where('pesanan.Id', $noNota)->first();
+        $compare = $this->service_proses_pesanan->compareStokBahanBakuDanKebutuhan($noNota);
+
+        if (!$pesanan) {
+            return response()->json([
+                'message' => 'Pesanan dengan ID $noNota tidak ditemukan'
+            ]);
+        } else {
+            if (count($compare) == 0) {
+                $pesanan->Status = 'Diproses';
+                $pesanan->save();
+                return response()->json([
+                    'message' => 'Pesanan berhasil diubah menjadi proses'
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Ada bahan baku yang kurang'
+                ]);
+            }
         }
     }
 }
