@@ -119,6 +119,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         route::get('getListPesananHarianDanYangDibeli/{tanggalBesok}', [controller_pesanan::class, 'getListPesananHarianDanYangDibeli']);
         Route::get('getDetailResepDanNamaResepUntukPesananBesok/{tanggal_besok}', [controller_resep::class, 'getDetailResepDanNamaResepUntukPesananBesok']);
         Route::get('getRekapPesananHarian/{tanggal}', [controller_pesanan::class, 'getRekapPesananHarian']);
+        Route::get('rekapBahanBakuPesananHarian/{tanggal}', [controller_resep::class, 'rekapBahanBakuPesananHarian']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -178,7 +179,7 @@ Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKeku
 
 Route::get('getYangPerluDibuat/{tanggal}', [controller_resep::class, 'getYangPerluDibuat']);
 
-Route::get('rekapBahanBakuPesananHarian/{tanggal}', [controller_resep::class, 'rekapBahanBakuPesananHarian']);
+
 
 Route::get('compareStokBahanBakuDanKebutuhan/{noNota}', [controller_resep::class, 'compareStokBahanBakuDanKebutuhan']);
 
