@@ -23,6 +23,7 @@ use App\Http\Controllers\controller_resep;
 use App\Http\Controllers\controller_detail_pemesanan;
 use App\Http\Controllers\controller_history_bahan_baku;
 use App\Http\Controllers\controller_konfirmasi_pembelian;
+use App\Http\Controllers\controller_konfirm_saldo;
 use App\Http\Controllers\controller_laporan;
 
 Route::post('register', [controller_auth::class, 'register']);
@@ -170,7 +171,14 @@ Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan'
 Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
 Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);
 
+Route::get('getCustomerByEmail/{email}', [controller_customer::class, 'getCustomerByEmail']);
+Route::post('requestSaldo/{email}', [controller_customer::class, 'requestSaldo']);
+Route::get('getHistoryPenarikanSaldo/{email}', [controller_customer::class, 'getHistoryPenarikanSaldo']);
 
+
+Route::get('getSaldoToConfirm', [controller_konfirm_saldo::class, 'getSaldoToConfirm']);
+Route::put('confirmRequestSaldo/{id}', [controller_konfirm_saldo::class, 'confirmRequestSaldo']);
+Route::put('rejectRequestSaldo/{id}', [controller_konfirm_saldo::class, 'rejectRequestSaldo']);
 
 
 route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);

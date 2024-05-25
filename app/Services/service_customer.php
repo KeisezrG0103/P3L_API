@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\model_customer;
 
-
 class service_customer
 {
     public function getTanggalLahirByEmail(String $Email): String
