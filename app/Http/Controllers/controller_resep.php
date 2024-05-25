@@ -61,6 +61,13 @@ class controller_resep extends Controller
         }
     }
 
+    public function getDetailResepDanNamaResepUntukPesananBesok($tanggal_besok)
+    {
+        $detailResep = $this->service_proses_pesanan->getDetailResepDanNamaResepUntukPesananBesok($tanggal_besok);
+        return  resource_resep::collection($detailResep);
+    }
+
+
     public function GetKekuranganBahanBaku($noNota)
     {
         try {

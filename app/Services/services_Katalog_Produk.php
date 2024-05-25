@@ -206,7 +206,7 @@ class services_Katalog_Produk
     public function getProdukByRequestandKuota($kategori)
     {
         $date = date('Y-m-d');
-        // days + 2
+
         $date = date('Y-m-d', strtotime($date . ' + 2 days'));
         if ($kategori != 'penitip') {
             $produk = model_produk::select(
