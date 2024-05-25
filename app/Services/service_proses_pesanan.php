@@ -39,6 +39,40 @@ class service_proses_pesanan
         return $pesanan;
     }
 
+
+
+    public function getListPesananHarian($tanggalBesok)
+    {
+        $pesanan = model_pesanan::select(
+            'pesanan.Id',
+            'customer.Nama',
+            'pesanan.Tanggal_Diambil'
+        )->where('pesanan.Status_Pembayaran', 'Lunas')
+            ->where('pesanan.Status', 'Diterima')
+            ->whereDate('pesanan.Tanggal_Diambil', $tanggalBesok)
+            ->join('customer', 'pesanan.Customer_Email', '=', 'customer.Email')
+            ->get();
+
+        return $pesanan;
+    }
+
+    public function getListPesananHarianDanYangDibeli($tanggalBesok)
+    {
+        $pesanan = $this->getListPesananHarian($tanggalBesok);
+
+        $listPesanan = [];
+
+        foreach ($pesanan as $p) {
+            $listPesanan[] = [
+                'Pesanan' => $p,
+                'Detail_Pesanan' => $this->getDetailPesanan($p->Id)
+            ];
+        }
+
+        return $listPesanan;
+    }
+
+
     public function getDetailPesanan($noNota)
     {
         $detailPesanan = model_detail_transaksi::select(
@@ -104,6 +138,7 @@ class service_proses_pesanan
                     foreach ($resep as $r) {
                         $r->Nama_Produk_asli = $pr->Nama;
                         $r->Jumlah = $pr->Jumlah;
+                        $r->cleanedName = $cleanedProductName;
                         $isiResep[] = $r;
                     }
                 }
@@ -119,6 +154,7 @@ class service_proses_pesanan
                 foreach ($resep as $r) {
                     $r->Nama_Produk_asli = $p->Nama_Produk;
                     $r->Jumlah = $p->Total_Produk;
+                    $r->cleanedName = $cleanedProductName;
                     $isiResep[] = $r;
                 }
             }
@@ -132,6 +168,17 @@ class service_proses_pesanan
         $pattern = '/1\/2\s*loyang/i';
 
         // Perform the regex match
+        if (preg_match($pattern, $NamaProduk)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function cekProdukDenganSatuanLoyang($NamaProduk)
+    {
+        $pattern = '/loyang/i';
+
         if (preg_match($pattern, $NamaProduk)) {
             return true;
         } else {
@@ -155,14 +202,21 @@ class service_proses_pesanan
 
         foreach ($resep as $r) {
 
-            if ($this->cekProdukSetengahLoyang($r->Nama_Produk_asli) && $r->Jumlah > 1) {
+            if ($this->cekProdukSetengahLoyang($r->Nama_Produk_asli) && $r->Jumlah > 1 && $this->cekProdukDenganSatuanLoyang($r->Nama_Produk_asli)) {
 
                 $r->Jumlah_Proses = $this->convertSetengahLoyangKeSatuLoyang($r->Jumlah);
                 $r->sisa = false;
+                $r->satuan = 'Loyang';
                 $ProsesPesanan[] = $r;
-            } else if ($this->cekProdukSetengahLoyang($r->Nama_Produk_asli) && $r->Jumlah == 1) {
+            } else if ($this->cekProdukSetengahLoyang($r->Nama_Produk_asli) && $r->Jumlah == 1 && $this->cekProdukDenganSatuanLoyang($r->Nama_Produk_asli)) {
                 $r->Jumlah_Proses = $r->Jumlah;
                 $r->sisa = true;
+                $r->satuan = 'Loyang';
+                $ProsesPesanan[] = $r;
+            } else if ($this->cekProdukDenganSatuanLoyang($r->Nama_Produk_asli)) {
+                $r->Jumlah_Proses = $r->Jumlah;
+                $r->sisa = false;
+                $r->satuan = 'Loyang';
                 $ProsesPesanan[] = $r;
             } else {
                 $r->Jumlah_Proses = $r->Jumlah;
@@ -173,6 +227,23 @@ class service_proses_pesanan
 
         return $ProsesPesanan;
     }
+
+
+
+    public function getYangPerluDibuat($tanggalBesok)
+    {
+        $pesanan = $this->getListPesananHarian($tanggalBesok);
+
+        $resep = [];
+
+        foreach ($pesanan as $p) {
+
+            $resep[] = $this->prosesPesanan($p->Id);
+        }
+
+        return $resep;
+    }
+
 
     public function getDetailResepAndKebutuhanById($id, $kebutuhan)
     {
@@ -199,9 +270,71 @@ class service_proses_pesanan
 
         $detailResep = [];
         foreach ($resep as $r) {
+
             $detailResep[] = $this->getDetailResepAndKebutuhanById($r->Id, $r->Jumlah_Proses);
         }
         return $detailResep;
+    }
+
+    public function getDetailResepDanNamaResep($noNota)
+    {
+        $resep = $this->prosesPesanan($noNota);
+
+        $detailResep = [];
+        foreach ($resep as $r) {
+
+            $detailResep[] = [
+                'Nama_Resep' => $r->Nama_Resep,
+                'Detail_Resep' => $this->getDetailResepAndKebutuhanById($r->Id, $r->Jumlah_Proses)
+            ];
+        }
+
+        return $detailResep;
+    }
+
+    public function getDetailResepDanNamaResepUntukPesananBesok($tanggal_besok)
+    {
+        $pesanan = $this->getListPesananHarian($tanggal_besok);
+
+        $detail = [];
+
+        foreach ($pesanan as $p) {
+
+            $detail[] = [
+                'Detail_Resep' => $this->getDetailResepDanNamaResep($p->Id)
+            ];
+        }
+
+        return $detail;
+    }
+    public function getRekapPesananHarian($tanggalBesok)
+    {
+        $pesanan = $this->getListPesananHarian($tanggalBesok);
+
+        $produk = [];
+
+        foreach ($pesanan as $p) {
+            $detailPesanan = $this->getDetailPesanan($p->Id);
+            foreach ($detailPesanan as $dp) {
+                if ($dp->Nama_Produk != null) {
+                    $produk[] = [
+                        'Produk' => $dp->Nama_Produk,
+                        'Jumlah' => $dp->Total_Produk
+                    ];
+                }
+                if ($dp->Nama_Hampers != null) {
+                    $namaProduk = $this->getProdukFromHampers($dp->Hampers_Id);
+                    foreach ($namaProduk as $np) {
+                        $produk[] = [
+                            'Produk' => $np->Nama,
+                            'Jumlah' => $np->Jumlah
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $produk;
     }
 
     public function getBahanBakubyId($id)
@@ -237,6 +370,7 @@ class service_proses_pesanan
                     $kebutuhan = $this->countKebutuhanBahanBaku($b->Jumlah);
                     if ($bb->Qty < $kebutuhan) {
                         $bb->Kebutuhan = $kebutuhan;
+                        $bb->Stok = $bb->Qty;
                         $bb->Kekurangan = $kebutuhan - $bb->Qty;
                         $stokBahanBaku[] = $bb;
                     }
@@ -290,5 +424,48 @@ class service_proses_pesanan
                 }
             }
         }
+    }
+
+    public function rekapBahanBakuPesananHarian($tanggalBesok)
+    {
+        $pesanan = $this->getListPesananHarian($tanggalBesok);
+
+        $rekap = [];
+
+        foreach ($pesanan as $p) {
+            $detail = $this->getDetailResepByPesanan($p->Id);
+            $kekurangan = $this->compareStokBahanBakuDanKebutuhan($p->Id);
+
+            foreach ($detail as $d) {
+                foreach ($d as $b) {
+                    $bahan_baku = $this->getBahanBakubyId($b->Id_Bahan_Baku);
+                    foreach ($bahan_baku as $bb) {
+                        $kebutuhan = $this->countKebutuhanBahanBaku($b->Jumlah);
+
+                        if (array_key_exists($bb->Id, $rekap)) {
+                            $rekap[$bb->Id]['Kebutuhan'] += $kebutuhan;
+                        } else {
+                            $rekap[$bb->Id] = [
+                                'Id' => $bb->Id,
+                                'Nama' => $bb->Nama,
+                                'Kebutuhan' => $kebutuhan,
+                                'Satuan' => $bb->Satuan,
+                                'Kekurangan' => 0,
+                                'Stok' => $bb->Qty,
+                            ];
+                        }
+
+
+                        foreach ($kekurangan as $k) {
+                            if ($k->Id == $bb->Id) {
+                                $rekap[$bb->Id]['Kekurangan'] += $k->Kekurangan;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $rekap;
     }
 }

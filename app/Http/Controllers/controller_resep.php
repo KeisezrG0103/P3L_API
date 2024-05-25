@@ -61,6 +61,13 @@ class controller_resep extends Controller
         }
     }
 
+    public function getDetailResepDanNamaResepUntukPesananBesok($tanggal_besok)
+    {
+        $detailResep = $this->service_proses_pesanan->getDetailResepDanNamaResepUntukPesananBesok($tanggal_besok);
+        return  resource_resep::collection($detailResep);
+    }
+
+
     public function GetKekuranganBahanBaku($noNota)
     {
         try {
@@ -116,6 +123,31 @@ class controller_resep extends Controller
         $historyBahanBaku = $this->service_history_bahan_baku->getHistoryBahanBakuByBahanAndTanggal($Bahan_Id, $Tanggal_Digunakan);
         return response()->json([
             'history_bahan_baku' => $historyBahanBaku
+        ]);
+    }
+
+
+    public function getYangPerluDibuat($tanggal_besok)
+    {
+        $yangPerluDibuat = $this->service_proses_pesanan->getYangPerluDibuat($tanggal_besok);
+        return response()->json([
+            'resep' => $yangPerluDibuat
+        ]);
+    }
+
+    public function rekapBahanBakuPesananHarian($tanggal_besok)
+    {
+        $rekap = $this->service_proses_pesanan->rekapBahanBakuPesananHarian($tanggal_besok);
+        return response()->json([
+            'rekap' => $rekap
+        ]);
+    }
+
+    public function compareStokBahanBakuDanKebutuhan($noNota)
+    {
+        $compare = $this->service_proses_pesanan->compareStokBahanBakuDanKebutuhan($noNota);
+        return response()->json([
+            'compare' => $compare
         ]);
     }
 }

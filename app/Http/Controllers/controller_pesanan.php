@@ -131,4 +131,16 @@ class controller_pesanan extends Controller
         $pesanan = $this->serviceProses->prosesPesanan($NoNota);
         return response()->json($pesanan);
     }
+
+    public function getListPesananHarianDanYangDibeli($tanggal_besok)
+    {
+        $pesanan = $this->serviceProses->getListPesananHarianDanYangDibeli($tanggal_besok);
+        return resource_pesanan::collection($pesanan);
+    }
+
+    public function getRekapPesananHarian($tanggal_besok)
+    {
+        $pesanan = $this->serviceProses->getRekapPesananHarian($tanggal_besok);
+        return response()->json($pesanan);
+    }
 }

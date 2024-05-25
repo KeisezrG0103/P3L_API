@@ -116,6 +116,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('changeStatusToDiproses/{noNota}', [controller_resep::class, 'changeStatusToProses']);
 
         route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
+
+        route::get('getListPesananHarianDanYangDibeli/{tanggalBesok}', [controller_pesanan::class, 'getListPesananHarianDanYangDibeli']);
+        Route::get('getDetailResepDanNamaResepUntukPesananBesok/{tanggal_besok}', [controller_resep::class, 'getDetailResepDanNamaResepUntukPesananBesok']);
+        Route::get('getRekapPesananHarian/{tanggal}', [controller_pesanan::class, 'getRekapPesananHarian']);
+        Route::get('rekapBahanBakuPesananHarian/{tanggal}', [controller_resep::class, 'rekapBahanBakuPesananHarian']);
     });
 
     Route::group(['middleware' => ['can:isMOorAdmin']], function () {
@@ -175,6 +180,11 @@ Route::get('getCustomerByEmail/{email}', [controller_customer::class, 'getCustom
 Route::post('requestSaldo/{email}', [controller_customer::class, 'requestSaldo']);
 Route::get('getHistoryPenarikanSaldo/{email}', [controller_customer::class, 'getHistoryPenarikanSaldo']);
 
+Route::get('getYangPerluDibuat/{tanggal}', [controller_resep::class, 'getYangPerluDibuat']);
+
+
+
+Route::get('compareStokBahanBakuDanKebutuhan/{noNota}', [controller_resep::class, 'compareStokBahanBakuDanKebutuhan']);
 
 Route::get('getSaldoToConfirm', [controller_konfirm_saldo::class, 'getSaldoToConfirm']);
 Route::put('confirmRequestSaldo/{id}', [controller_konfirm_saldo::class, 'confirmRequestSaldo']);
