@@ -176,7 +176,11 @@ Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKeku
 
 
 
+Route::get('getYangPerluDibuat/{tanggal}', [controller_resep::class, 'getYangPerluDibuat']);
 
+Route::get('rekapBahanBakuPesananHarian/{tanggal}', [controller_resep::class, 'rekapBahanBakuPesananHarian']);
+
+Route::get('compareStokBahanBakuDanKebutuhan/{noNota}', [controller_resep::class, 'compareStokBahanBakuDanKebutuhan']);
 
 
 route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);

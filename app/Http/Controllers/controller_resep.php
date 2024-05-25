@@ -125,4 +125,29 @@ class controller_resep extends Controller
             'history_bahan_baku' => $historyBahanBaku
         ]);
     }
+
+
+    public function getYangPerluDibuat($tanggal_besok)
+    {
+        $yangPerluDibuat = $this->service_proses_pesanan->getYangPerluDibuat($tanggal_besok);
+        return response()->json([
+            'resep' => $yangPerluDibuat
+        ]);
+    }
+
+    public function rekapBahanBakuPesananHarian($tanggal_besok)
+    {
+        $rekap = $this->service_proses_pesanan->rekapBahanBakuPesananHarian($tanggal_besok);
+        return response()->json([
+            'rekap' => $rekap
+        ]);
+    }
+
+    public function compareStokBahanBakuDanKebutuhan($noNota)
+    {
+        $compare = $this->service_proses_pesanan->compareStokBahanBakuDanKebutuhan($noNota);
+        return response()->json([
+            'compare' => $compare
+        ]);
+    }
 }
