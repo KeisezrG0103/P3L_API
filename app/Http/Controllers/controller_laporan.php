@@ -40,4 +40,29 @@ class controller_laporan extends Controller
             'data' => $penjualan
         ], 200);
     }
+
+
+    public function laporanPresensiKaryawan($bulan, $year){
+
+        $date = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        $presensi = $this->service_laporan->laporanPresensiKaryawan($bulan, $year);
+
+        return response()->json([
+            'status' => 'success',
+            'date' => $date,
+            'data' => $presensi
+        ], 200);
+        
+    }
+
+    public function getLaporanPresensi($date)
+    {
+       
+        $carbonDate = Carbon::parse($date);
+        $bulan = $carbonDate->format('m');
+        $year = $carbonDate->format('Y');
+
+       
+        return $this->laporanPresensiKaryawan($bulan, $year);
+    }
 }
