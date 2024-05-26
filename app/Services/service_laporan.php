@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\model_bahan_baku;
 use App\Models\model_karyawan;
+use App\Models\model_pengadaan_bahan_baku;
+use App\Models\model_pengeluaran_lain_lain;
+use App\Models\model_pesanan;
 use App\Models\model_produk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -63,5 +66,37 @@ class service_laporan
         ->get();
 
         return $presensi;
+    }
+
+    public function laporanKeuangan($bulan, $year)
+    {
+       
+        $penjualan = model_pesanan::select(
+                DB::raw('SUM(pesanan.Total) as TotalPenjualan'),
+                DB::raw('SUM(pesanan.Tip) as TotalTip')
+            )
+            ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
+            ->whereYear('pesanan.Tanggal_Pesan', $year)
+            ->first();
+
+       
+        $pengeluaranLain = model_pengeluaran_lain_lain::select(
+            'Nama_Pengeluaran', 
+            'Harga')
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $year)
+            ->get();
+
+      
+        $totalPengadaanBahanBaku = model_pengadaan_bahan_baku::select(DB::raw('SUM(Harga) as TotalPengadaanBahanBaku'))
+            ->whereMonth('Tanggal_Pengadaan', $bulan)
+            ->whereYear('Tanggal_Pengadaan', $year)
+            ->first();
+
+        return [
+            'penjualan' => $penjualan,
+            'pengeluaranLain' => $pengeluaranLain,
+            'totalPengadaanBahanBaku' => $totalPengadaanBahanBaku
+        ];
     }
 }
