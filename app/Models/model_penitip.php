@@ -25,4 +25,9 @@ class model_penitip extends Model
         'no_telp',
         'is_deleted'
     ];
+
+    public function produk()
+    {
+        return $this->hasMany(model_produk::class, 'Penitip_ID', 'Id');
+    }
 }

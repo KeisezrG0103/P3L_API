@@ -6,6 +6,7 @@ use App\Models\model_bahan_baku;
 use App\Models\model_karyawan;
 use App\Models\model_pengadaan_bahan_baku;
 use App\Models\model_pengeluaran_lain_lain;
+use App\Models\model_penitip;
 use App\Models\model_pesanan;
 use App\Models\model_produk;
 use Carbon\Carbon;
@@ -99,4 +100,67 @@ class service_laporan
             'totalPengadaanBahanBaku' => $totalPengadaanBahanBaku
         ];
     }
+
+    public function laporanPenitip($bulan, $tahun)
+    {
+    
+        $listPenitip = model_penitip::all();
+
+    
+        $laporan = [];
+
+    
+        foreach ($listPenitip as $penitip) {
+        
+            $laporanPenitip = (object)[
+                'Penitip_ID' => $penitip->Id,
+                'Nama_Penitip' => $penitip->Nama_Penitip,
+                'Produk' => [] 
+            ];
+
+        
+            $produkPenitip = $penitip->produk()->get();
+            
+        
+            foreach ($produkPenitip as $produk) {
+            
+                $laporanProduk = DB::table('detail_transaksi')
+                    ->select(
+                        DB::raw('SUM(Total_Produk) AS Total_Produk_Terbeli'),
+                        DB::raw('SUM(Total_Produk * Harga) AS Total_Harga_Produk'),
+                        DB::raw('(SUM(Total_Produk * Harga) * 0.2) AS Komisi'),
+                        DB::raw('(SUM(Total_Produk * Harga) * 0.8) AS Pendapatan')
+                    )
+                    ->leftJoin('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
+                    ->leftJoin('pesanan', 'detail_transaksi.Pesanan_Id', '=', 'pesanan.Id')
+                    ->where('produk.Penitip_ID', $penitip->Id)
+                    ->where('produk.Id', $produk->Id)
+                    ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
+                    ->whereYear('pesanan.Tanggal_Pesan', $tahun)
+                    ->groupBy('produk.Id')
+                    ->first();
+
+            
+                $laporanProdukObj = (object)[
+                    'Nama_Produk' => $produk->Nama,
+                    'Harga_Produk' => $produk->Harga,
+                    'Total_Produk_Terbeli' => $laporanProduk->Total_Produk_Terbeli ?? 0,
+                    'Total' => $laporanProduk->Total_Harga_Produk ?? 0,
+                    'Komisi' => $laporanProduk->Komisi ?? 0,
+                    'Pendapatan' => $laporanProduk->Pendapatan ?? 0
+                ];
+            
+                
+                $laporanPenitip->Produk[] = $laporanProdukObj;
+            }
+
+            
+            $laporan[] = $laporanPenitip;
+        }
+
+        
+        return $laporan;
+    }
+
+
 }

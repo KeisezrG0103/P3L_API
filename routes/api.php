@@ -194,3 +194,4 @@ Route::put('rejectRequestSaldo/{id}', [controller_konfirm_saldo::class, 'rejectR
 route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
 route::get('getLaporanPresensi/{date}', [controller_laporan::class, 'getLaporanPresensi']);
 route::get('getLaporanKeuangan/{date}', [controller_laporan::class, 'getLaporanKeuangan']);
+route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPenitip']);

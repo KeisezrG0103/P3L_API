@@ -88,4 +88,20 @@ class controller_laporan extends Controller
        
         return $this->laporanKeuangan($bulan, $year);
     }
+
+    public function getlaporanPenitip($date)
+    {
+        $carbonDate = Carbon::parse($date);
+        $bulan = $carbonDate->month;
+        $tahun = $carbonDate->year;
+
+        $laporan = $this->service_laporan->laporanPenitip($bulan, $tahun);
+
+        return response()->json([
+            'status' => 'success',
+            'date' => $carbonDate->format('Y-m-d'),
+            'data' => $laporan
+        ], 200);
+    }
+
 }
