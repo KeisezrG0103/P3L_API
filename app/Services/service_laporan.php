@@ -79,27 +79,39 @@ class service_laporan
             ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
             ->whereYear('pesanan.Tanggal_Pesan', $year)
             ->first();
-
-       
+    
+        
         $pengeluaranLain = model_pengeluaran_lain_lain::select(
             'Nama_Pengeluaran', 
             'Harga')
             ->whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $year)
             ->get();
-
-      
+    
         $totalPengadaanBahanBaku = model_pengadaan_bahan_baku::select(DB::raw('SUM(Harga) as TotalPengadaanBahanBaku'))
             ->whereMonth('Tanggal_Pengadaan', $bulan)
             ->whereYear('Tanggal_Pengadaan', $year)
             ->first();
-
+    
+        
+        $totalPembayaranPenitip = DB::table('pesanan')
+            ->leftJoin('detail_transaksi', 'pesanan.Id', '=', 'detail_transaksi.Pesanan_Id')
+            ->leftJoin('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
+            ->leftJoin('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
+            ->select(DB::raw('SUM(DISTINCT penitip.Komisi) as TotalPembayaranPenitip'))
+            ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
+            ->whereYear('pesanan.Tanggal_Pesan', $year)
+            ->first();
+    
+      
         return [
             'penjualan' => $penjualan,
             'pengeluaranLain' => $pengeluaranLain,
-            'totalPengadaanBahanBaku' => $totalPengadaanBahanBaku
+            'totalPengadaanBahanBaku' => $totalPengadaanBahanBaku,
+            'totalPembayaranPenitip' => $totalPembayaranPenitip
         ];
     }
+    
 
     public function laporanPenitip($bulan, $tahun)
     {
