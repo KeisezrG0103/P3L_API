@@ -15,7 +15,7 @@ class controller_konfirm_saldo extends Controller
         try {
 
             $confirm = model_history_penarikan_saldo::where('Status', 'Menunggu')->get();
-            return response()->json([ $confirm], 200);
+            return response()->json( $confirm, 200);
 
         } catch (\Exception $e) {
             
