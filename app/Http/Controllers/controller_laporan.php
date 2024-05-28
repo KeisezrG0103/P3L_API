@@ -29,10 +29,10 @@ class controller_laporan extends Controller
         ], 200);
     }
 
-    public function laporanProdukPerBulan($bulan)
+    public function laporanProdukPerBulan($bulan, $year)
     {
         $date = Carbon::now()->format('Y-m-d');
-        $penjualan = $this->service_laporan->filterSameNameAndAdd($bulan);
+        $penjualan = $this->service_laporan->filterSameNameAndAdd($bulan, $year);
 
         return response()->json([
             'status' => 'success',

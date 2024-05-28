@@ -26,21 +26,20 @@ class service_laporan
             'bahan_baku.Satuan',
         )->get();
 
-
-
-
         return $bahan_baku;
     }
 
 
 
-    public function laporanPenjualanProdukPerBulan($bulan)
+    public function laporanPenjualanProdukPerBulan($bulan, $year)
     {
         return model_pesanan::select('Id', 'Tanggal_Diambil', 'Tanggal_Pesan')
             ->whereMonth('Tanggal_Pesan', $bulan)
+            ->whereYear('Tanggal_Pesan', $year)
             ->where('Status', 'Selesai')
             ->get();
     }
+
 
     public function ProdukDalamPesanan($pesananId)
     {
@@ -77,9 +76,9 @@ class service_laporan
             ->keyBy('Id');
     }
 
-    public function laporanPenjualanProduk($bulan)
+    public function laporanPenjualanProduk($bulan, $year)
     {
-        $penjualan = $this->laporanPenjualanProdukPerBulan($bulan);
+        $penjualan = $this->laporanPenjualanProdukPerBulan($bulan, $year);
         $pesananIds = $penjualan->pluck('Id');
 
         $produkDalamPesanan = model_detail_transaksi::select(
@@ -129,9 +128,9 @@ class service_laporan
         return $penjualanProduk;
     }
 
-    public function filterSameNameAndAdd($bulan)
+    public function filterSameNameAndAdd($bulan, $year)
     {
-        $penjualan = $this->laporanPenjualanProduk($bulan);
+        $penjualan = $this->laporanPenjualanProduk($bulan, $year);
         $penjualanProduk = [];
         $penjualanProduk = collect($penjualan)->groupBy('Nama_Produk')->map(function ($item) {
             return [
