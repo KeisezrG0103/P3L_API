@@ -195,3 +195,8 @@ route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHis
 route::get('getLaporanPresensi/{date}', [controller_laporan::class, 'getLaporanPresensi']);
 route::get('getLaporanKeuangan/{date}', [controller_laporan::class, 'getLaporanKeuangan']);
 route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPenitip']);
+
+
+
+Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
+Route::get('laporan_produk_per_bulan/{bulan}', [controller_laporan::class, 'laporanProdukPerBulan']);

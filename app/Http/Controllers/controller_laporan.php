@@ -32,7 +32,7 @@ class controller_laporan extends Controller
     public function laporanProdukPerBulan($bulan)
     {
         $date = Carbon::now()->format('Y-m-d');
-        $penjualan = $this->service_laporan->laporanPenjualanPerProduk($bulan);
+        $penjualan = $this->service_laporan->filterSameNameAndAdd($bulan);
 
         return response()->json([
             'status' => 'success',
@@ -42,7 +42,8 @@ class controller_laporan extends Controller
     }
 
 
-    public function laporanPresensiKaryawan($bulan, $year){
+    public function laporanPresensiKaryawan($bulan, $year)
+    {
 
         $date = Carbon::now('Asia/Jakarta')->format('Y-m-d');
         $presensi = $this->service_laporan->laporanPresensiKaryawan($bulan, $year);
@@ -52,17 +53,16 @@ class controller_laporan extends Controller
             'date' => $date,
             'data' => $presensi
         ], 200);
-        
     }
 
     public function getLaporanPresensi($date)
     {
-       
+
         $carbonDate = Carbon::parse($date);
         $bulan = $carbonDate->format('m');
         $year = $carbonDate->format('Y');
 
-       
+
         return $this->laporanPresensiKaryawan($bulan, $year);
     }
 
@@ -80,12 +80,12 @@ class controller_laporan extends Controller
 
     public function getLaporanKeuangan($date)
     {
-       
+
         $carbonDate = Carbon::parse($date);
         $bulan = $carbonDate->format('m');
         $year = $carbonDate->format('Y');
 
-       
+
         return $this->laporanKeuangan($bulan, $year);
     }
 
@@ -103,5 +103,4 @@ class controller_laporan extends Controller
             'data' => $laporan
         ], 200);
     }
-
 }
