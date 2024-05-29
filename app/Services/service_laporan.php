@@ -158,14 +158,15 @@ class service_laporan
             DB::raw('SUM(CASE WHEN presensi.Status = "Masuk" THEN 1 ELSE 0 END) as Jumlah_Hadir'),
             DB::raw('SUM(CASE WHEN presensi.Status != "Masuk" THEN 1 ELSE 0 END) as Jumlah_Bolos')
         )
-            ->leftJoin('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
-            ->whereMonth('presensi.Tanggal', $bulan)
-            ->whereYear('presensi.Tanggal', $year)
-            ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
-            ->get();
-
+        ->leftJoin('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
+        ->whereMonth('presensi.Tanggal', $bulan)
+        ->whereYear('presensi.Tanggal', $year)
+        ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
+        ->get();
+    
         return $presensi;
     }
+    
 
     public function laporanKeuangan($bulan, $year)
     {
