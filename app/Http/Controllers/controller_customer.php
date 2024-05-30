@@ -89,7 +89,7 @@ class controller_customer extends Controller
             return response()->json([ $customer],200);
         } catch (\Exception $e) {
             
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
 
@@ -138,7 +138,7 @@ class controller_customer extends Controller
         $history = model_history_penarikan_saldo::where("Customer_Email", $Email)->get();
     
        
-        return response()->json([ $history], 200);
+        return response()->json($history, 200);
         
            
     }
