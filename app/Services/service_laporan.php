@@ -158,7 +158,7 @@ class service_laporan
             DB::raw('SUM(CASE WHEN presensi.Status = "Masuk" THEN 1 ELSE 0 END) as Jumlah_Hadir'),
             DB::raw('SUM(CASE WHEN presensi.Status != "Masuk" THEN 1 ELSE 0 END) as Jumlah_Bolos')
         )
-        ->leftJoin('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
+        ->join('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
         ->whereMonth('presensi.Tanggal', $bulan)
         ->whereYear('presensi.Tanggal', $year)
         ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
@@ -170,13 +170,18 @@ class service_laporan
 
     public function laporanKeuangan($bulan, $year)
     {
+       
         $penjualan = model_pesanan::select(
             DB::raw('SUM(pesanan.Total) as TotalPenjualan'),
             DB::raw('SUM(pesanan.Tip) as TotalTip')
         )
         ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
         ->whereYear('pesanan.Tanggal_Pesan', $year)
+        ->where('pesanan.Status', 'Selesai')
         ->first();
+    
+    
+    
 
         $pengeluaranLain = model_pengeluaran_lain_lain::select(
             'Nama_Pengeluaran',
@@ -200,15 +205,19 @@ class service_laporan
         )
         ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
         ->whereYear('pesanan.Tanggal_Pesan', $year)
+        ->where('pesanan.Status', 'Selesai') 
         ->first();
 
-        $totalGajiKaryawan = DB::table('karyawan')
-        ->join('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
-        ->select(DB::raw('SUM(karyawan.TotalGaji) as TotalGajiKaryawan'))
-        ->whereMonth('presensi.Tanggal', $bulan)
-        ->whereYear('presensi.Tanggal', $year)
-        ->first();
+        $totalGajiKaryawan = DB::table(DB::raw('(SELECT presensi.Karyawan_Id AS Id, karyawan.TotalGaji AS TotalGajiKaryawan 
+                    FROM karyawan 
+                    JOIN presensi ON karyawan.Id = presensi.Karyawan_Id 
+                    WHERE MONTH(presensi.Tanggal) = '.$bulan.' 
+                    AND YEAR(presensi.Tanggal) = '.$year.' 
+                    GROUP BY presensi.Karyawan_Id, karyawan.TotalGaji) AS subquery'))
+                    ->select(DB::raw('SUM(subquery.TotalGajiKaryawan) AS TotalGajiKaryawan'))
+                    ->first();
 
+    
         return [
             'penjualan' => $penjualan,
             'pengeluaranLain' => $pengeluaranLain,
@@ -252,6 +261,7 @@ class service_laporan
                     ->leftJoin('pesanan', 'detail_transaksi.Pesanan_Id', '=', 'pesanan.Id')
                     ->where('produk.Penitip_ID', $penitip->Id)
                     ->where('produk.Id', $produk->Id)
+                    ->where('pesanan.Status', 'Selesai') 
                     ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
                     ->whereYear('pesanan.Tanggal_Pesan', $tahun)
                     ->groupBy('produk.Id')
