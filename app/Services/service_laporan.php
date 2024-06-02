@@ -170,18 +170,14 @@ class service_laporan
 
     public function laporanKeuangan($bulan, $year)
     {
-       
         $penjualan = model_pesanan::select(
-            DB::raw('SUM(pesanan.Total) as TotalPenjualan'),
-            DB::raw('SUM(pesanan.Tip) as TotalTip')
+            DB::raw('COALESCE(SUM(pesanan.Total), 0) as TotalPenjualan'),
+            DB::raw('COALESCE(SUM(pesanan.Tip), 0) as TotalTip')
         )
         ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
         ->whereYear('pesanan.Tanggal_Pesan', $year)
         ->where('pesanan.Status', 'Selesai')
         ->first();
-    
-    
-    
 
         $pengeluaranLain = model_pengeluaran_lain_lain::select(
             'Nama_Pengeluaran',
@@ -191,7 +187,7 @@ class service_laporan
         ->whereYear('tanggal', $year)
         ->get();
 
-        $totalPengadaanBahanBaku = model_pengadaan_bahan_baku::select(DB::raw('SUM(Harga) as TotalPengadaanBahanBaku'))
+        $totalPengadaanBahanBaku = model_pengadaan_bahan_baku::select(DB::raw('COALESCE(SUM(Harga), 0) as TotalPengadaanBahanBaku'))
         ->whereMonth('Tanggal_Pengadaan', $bulan)
         ->whereYear('Tanggal_Pengadaan', $year)
         ->first();
@@ -201,7 +197,7 @@ class service_laporan
         ->join('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
         ->join('pesanan', 'detail_transaksi.Pesanan_Id', '=', 'pesanan.Id')
         ->select(
-            DB::raw('SUM((detail_transaksi.Total_Produk * produk.Harga) - (detail_transaksi.Total_Produk * produk.Harga * 0.2)) AS TotalPembayaranPenitip')
+            DB::raw('COALESCE(SUM((detail_transaksi.Total_Produk * produk.Harga) - (detail_transaksi.Total_Produk * produk.Harga * 0.2)), 0) AS TotalPembayaranPenitip')
         )
         ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
         ->whereYear('pesanan.Tanggal_Pesan', $year)
@@ -214,10 +210,9 @@ class service_laporan
                     WHERE MONTH(presensi.Tanggal) = '.$bulan.' 
                     AND YEAR(presensi.Tanggal) = '.$year.' 
                     GROUP BY presensi.Karyawan_Id, karyawan.TotalGaji) AS subquery'))
-                    ->select(DB::raw('SUM(subquery.TotalGajiKaryawan) AS TotalGajiKaryawan'))
+                    ->select(DB::raw('COALESCE(SUM(subquery.TotalGajiKaryawan), 0) AS TotalGajiKaryawan'))
                     ->first();
 
-    
         return [
             'penjualan' => $penjualan,
             'pengeluaranLain' => $pengeluaranLain,
@@ -226,6 +221,9 @@ class service_laporan
             'totalGajiKaryawan' => $totalGajiKaryawan
         ];
     }
+
+    
+    
 
     public function laporanPenitip($bulan, $tahun)
     {
