@@ -83,6 +83,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('history', [controller_pesanan::class, 'getAllHistoryPesanan']);
 
         Route::get('resep', [controller_resep::class, 'getResep']);
+
+
+        Route::get('getSaldoToConfirm', [controller_konfirm_saldo::class, 'getSaldoToConfirm']);
+        Route::put('confirmRequestSaldo/{id}', [controller_konfirm_saldo::class, 'confirmRequestSaldo']);
+        Route::put('rejectRequestSaldo/{id}', [controller_konfirm_saldo::class, 'rejectRequestSaldo']);
     });
 
     Route::group(['middleware' => ['can:isMO']], function () {
@@ -131,8 +136,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
         Route::get('laporan_produk_per_bulan/{bulan}/{year}', [controller_laporan::class, 'laporanProdukPerBulan']);
 
+
         Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
         Route::get('LaporanPenjualanBulananSecaraKeseluruhan', [controller_laporan::class, 'LaporanPenjualanBulananSecaraKeseluruhan']);
+
+
+        route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
+        route::get('getLaporanPresensi/{date}', [controller_laporan::class, 'getLaporanPresensi']);
+        route::get('getLaporanKeuangan/{date}', [controller_laporan::class, 'getLaporanKeuangan']);
+        route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPenitip']);
     });
 
     Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
@@ -174,34 +186,30 @@ Route::get('getProdukByRequestandKuota/{kategori}', [controller_produk::class, '
 
 
 //debug only
-Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getResepFromDetailPesanan']);
-Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
-Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
-Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);
+// Route::get('getResepFromDetailPesanan/{noNota}', [controller_resep::class, 'getResepFromDetailPesanan']);
+// Route::get('prosesPesanan/{NoNota}', [controller_pesanan::class, 'prosesPesanan']);
+// Route::get('getDetailResepByPesanan/{nota}', [controller_resep::class, 'getDetailResepByPesanan']);
+// Route::get('GetKekuranganBahanBaku/{noNota}', [controller_resep::class, 'GetKekuranganBahanBaku']);
 
-Route::get('getCustomerByEmail/{email}', [controller_customer::class, 'getCustomerByEmail']);
-Route::post('requestSaldo/{email}', [controller_customer::class, 'requestSaldo']);
-Route::get('getHistoryPenarikanSaldo/{email}', [controller_customer::class, 'getHistoryPenarikanSaldo']);
+// Route::get('getCustomerByEmail/{email}', [controller_customer::class, 'getCustomerByEmail']);
+// Route::post('requestSaldo/{email}', [controller_customer::class, 'requestSaldo']);
+// Route::get('getHistoryPenarikanSaldo/{email}', [controller_customer::class, 'getHistoryPenarikanSaldo']);
 
-Route::get('getYangPerluDibuat/{tanggal}', [controller_resep::class, 'getYangPerluDibuat']);
-
-
-
-Route::get('compareStokBahanBakuDanKebutuhan/{noNota}', [controller_resep::class, 'compareStokBahanBakuDanKebutuhan']);
-
-Route::get('getSaldoToConfirm', [controller_konfirm_saldo::class, 'getSaldoToConfirm']);
-Route::put('confirmRequestSaldo/{id}', [controller_konfirm_saldo::class, 'confirmRequestSaldo']);
-Route::put('rejectRequestSaldo/{id}', [controller_konfirm_saldo::class, 'rejectRequestSaldo']);
+// Route::get('getYangPerluDibuat/{tanggal}', [controller_resep::class, 'getYangPerluDibuat']);
 
 
-route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
-route::get('getLaporanPresensi/{date}', [controller_laporan::class, 'getLaporanPresensi']);
-route::get('getLaporanKeuangan/{date}', [controller_laporan::class, 'getLaporanKeuangan']);
-route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPenitip']);
+
+// Route::get('compareStokBahanBakuDanKebutuhan/{noNota}', [controller_resep::class, 'compareStokBahanBakuDanKebutuhan']);
+
+// Route::get('getSaldoToConfirm', [controller_konfirm_saldo::class, 'getSaldoToConfirm']);
+// Route::put('confirmRequestSaldo/{id}', [controller_konfirm_saldo::class, 'confirmRequestSaldo']);
+// Route::put('rejectRequestSaldo/{id}', [controller_konfirm_saldo::class, 'rejectRequestSaldo']);
 
 
-Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
+// route::get('getHistoryBahanBaku', [controller_history_bahan_baku::class, 'getHistoryBahanBaku']);
+// route::get('getLaporanPresensi/{date}', [controller_laporan::class, 'getLaporanPresensi']);
+// route::get('getLaporanKeuangan/{date}', [controller_laporan::class, 'getLaporanKeuangan']);
+// route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPenitip']);
 
 
-Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
-Route::get('LaporanPenjualanBulananSecaraKeseluruhan', [controller_laporan::class, 'LaporanPenjualanBulananSecaraKeseluruhan']);
+// Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
