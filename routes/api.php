@@ -132,6 +132,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('laporan_produk_per_bulan/{bulan}/{year}', [controller_laporan::class, 'laporanProdukPerBulan']);
 
         Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
+        Route::get('LaporanPenjualanBulananSecaraKeseluruhan', [controller_laporan::class, 'LaporanPenjualanBulananSecaraKeseluruhan']);
     });
 
     Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
@@ -203,3 +204,4 @@ Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku'])
 
 
 Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
+Route::get('LaporanPenjualanBulananSecaraKeseluruhan', [controller_laporan::class, 'LaporanPenjualanBulananSecaraKeseluruhan']);

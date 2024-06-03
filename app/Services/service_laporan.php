@@ -328,4 +328,16 @@ class service_laporan
 
         return $recap;
     }
+
+    public function LaporanPenjualanBulananSecaraKeseluruhan()
+    {
+        $laporan = model_pesanan::select(
+            DB::raw('MONTHNAME(Tanggal_Pesan) as Bulan'),
+            DB::raw('YEAR(Tanggal_Pesan) as Tahun'),
+            DB::raw('SUM(Total) as Total_Penjualan'),
+            DB::raw('SUM(Tip) as Total_Tip')
+        )->where('Status', 'Selesai')->where('Status_Pembayaran', 'Lunas')->groupBy('Bulan', 'Tahun')->get();
+
+        return $laporan;
+    }
 }
