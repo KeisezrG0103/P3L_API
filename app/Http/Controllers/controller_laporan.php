@@ -103,4 +103,23 @@ class controller_laporan extends Controller
             'data' => $laporan
         ], 200);
     }
+
+    public function LaporanPenggunaanBahanBakuByPeriode($start, $end)
+    {
+        try {
+            $date = Carbon::now('Asia/Jakarta')->format('Y-m-d');
+            $laporan = $this->service_laporan->RecapLaporanPenggunaanBahanBakuByPeriode($start, $end);
+
+            return response()->json([
+                'status' => 'success',
+                'date' => $date,
+                'data' => $laporan
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -130,6 +130,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:isMOorOwner']], function () {
         Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
         Route::get('laporan_produk_per_bulan/{bulan}/{year}', [controller_laporan::class, 'laporanProdukPerBulan']);
+
+        Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
     });
 
     Route::get('Tanggal_Lahir_Customer/{Email}', [controller_customer::class, 'getTanggalLahirPerCustomer']);
@@ -198,3 +200,6 @@ route::get('getLaporanPenitip/{date}', [controller_laporan::class, 'getLaporanPe
 
 
 Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
+
+
+Route::get('LaporanPenggunaanBahanBakuByPeriode/{start}/{end}', [controller_laporan::class, 'LaporanPenggunaanBahanBakuByPeriode']);
