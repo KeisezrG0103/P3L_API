@@ -223,4 +223,4 @@ Route::get('getProdukByRequestandKuota/{kategori}', [controller_produk::class, '
 
 // Route::get('laporan_bahan_baku', [controller_laporan::class, 'getAllBahanBaku']);
 
-Route::get('LaporanPenjualanPerProdukV2/{bulan}/{year}', [controller_laporan::class, 'LaporanPenjualanPerProdukV2']);
+Route::get('laporan_produk_per_bulanV2/{bulan}/{year}', [controller_laporan::class, 'LaporanPenjualanPerProdukV2']);
