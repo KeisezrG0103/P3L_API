@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\model_bahan_baku;
 use App\Models\model_detail_hampers;
 use App\Models\model_detail_transaksi;
+use App\Models\model_hampers;
 use App\Models\model_history_bahan_baku;
 use App\Models\model_karyawan;
 use App\Models\model_pengadaan_bahan_baku;
@@ -69,6 +70,14 @@ class service_laporan
             ->get();
     }
 
+    public function getHampers($hampersIds)
+    {
+        return model_hampers::select('Id', 'Nama_Hampers', 'Harga')
+            ->whereIn('Id', $hampersIds)
+            ->get()
+            ->keyBy('Id');
+    }
+
     public function getHargaProduk($produkIds)
     {
         return model_produk::select('Id', 'Harga', 'Nama')
@@ -123,6 +132,72 @@ class service_laporan
                     'Harga' => $harga->Harga,
                     'Total' => $harga->Harga * $produk->Kuantitas
                 ];
+            }
+        }
+
+        return $penjualanProduk;
+    }
+
+
+    public function laporanPenjualanProdukV2($bulan, $year)
+    {
+        $pesanan = $this->laporanPenjualanProdukPerBulan($bulan, $year);
+
+        $penjualanProduk = [];
+
+        // Mengumpulkan semua ID pesanan untuk query eager loading
+        $pesananIds = $pesanan->pluck('Id')->toArray();
+
+        // Mengambil semua produk dalam pesanan dengan eager loading
+        $produkDalamPesanan = model_detail_transaksi::select(
+            'detail_transaksi.Total_Produk as Kuantitas',
+            'detail_transaksi.Hampers_Id',
+            'detail_transaksi.Produk_Id'
+        )
+            ->leftJoin('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
+            ->whereIn('detail_transaksi.Pesanan_Id', $pesananIds)
+            ->where('produk.Penitip_Id', null)
+            ->get();
+
+        // Membuat dictionary untuk harga hampers
+        $hampersIds = $produkDalamPesanan->pluck('Hampers_Id')->toArray();
+        $hargaHampers = $this->getHampers($hampersIds)->keyBy('Id');
+
+        // Membuat dictionary untuk harga produk
+        $produkIds = $produkDalamPesanan->pluck('Produk_Id')->toArray();
+        $hargaProduk = $this->getHargaProduk($produkIds)->keyBy('Id');
+
+        // Memproses produk dalam pesanan
+        foreach ($produkDalamPesanan as $produk) {
+            $harga = $produk->Hampers_Id ? $hargaHampers[$produk->Hampers_Id]->Harga : $hargaProduk[$produk->Produk_Id]->Harga;
+
+            $penjualanProduk[] = (object)[
+                'Nama_Produk' => $produk->Hampers_Id ? $hargaHampers[$produk->Hampers_Id]->Nama_Hampers : $hargaProduk[$produk->Produk_Id]->Nama,
+                'Kuantitas' => $produk->Kuantitas,
+                'Harga' => $harga,
+                'Total' => $harga * $produk->Kuantitas
+            ];
+        }
+
+        return $penjualanProduk;
+    }
+
+
+
+    public function sameNameAndAdd($bulan, $year)
+    {
+        $penjualan = $this->laporanPenjualanProdukV2($bulan, $year);
+
+        $penjualanProduk = [];
+
+        foreach ($penjualan as $p) {
+            $index = array_search($p->Nama_Produk, array_column($penjualanProduk, 'Nama_Produk'));
+
+            if ($index === false) {
+                $penjualanProduk[] = $p;
+            } else {
+                $penjualanProduk[$index]->Kuantitas += $p->Kuantitas;
+                $penjualanProduk[$index]->Total += $p->Total;
             }
         }
 
