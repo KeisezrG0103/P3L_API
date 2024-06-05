@@ -239,75 +239,86 @@ class service_laporan
         // Langkah pertama: Dapatkan data dasar
         $presensi = model_karyawan::select(
             'karyawan.Nama',
-            'karyawan.TotalGaji',
+            'role.Gaji as Gaji',
             'karyawan.Bonus',
             DB::raw('SUM(CASE WHEN presensi.Status = "Masuk" THEN 1 ELSE 0 END) as Jumlah_Hadir'),
             DB::raw('SUM(CASE WHEN presensi.Status != "Masuk" THEN 1 ELSE 0 END) as Jumlah_Bolos')
         )
         ->join('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
+        ->join('role', 'karyawan.Role_Id', '=', 'role.Id')
         ->whereMonth('presensi.Tanggal', $bulan)
         ->whereYear('presensi.Tanggal', $year)
-        ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
+        ->groupBy('karyawan.Nama', 'role.Gaji', 'karyawan.TotalGaji', 'karyawan.Bonus')
         ->get();
     
-        // Langkah kedua: Hitung Honor Harian dan Total
-        $presensi->transform(function ($item, $key) {
-            $item->Honor_Harian = ($item->TotalGaji - $item->Bonus) / ($item->Jumlah_Hadir > 0 ? $item->Jumlah_Hadir : 1);
-            $item->Total = $item->Honor_Harian + $item->Bonus;
-            return $item;
+        $presensi->transform(function ($item) {
+            if ($item->Jumlah_Bolos >= 4) {
+                $item->Bonus = 0;
+            }
+    
+            if ($item->Jumlah_Hadir > 0) {
+                $item->Honor_Harian = $item->Gaji / $item->Jumlah_Hadir;
+                $item->Total = $item->Gaji + $item->Bonus;
+            
+                return $item;
+            } else {
+                $item->Honor_Harian = 0;
+                $item->Total = 0;
+                return $item;
+            }
+            
+          
         });
     
-        return $presensi;
+        // Hitung total gaji karyawan
+        $totalGajiKaryawan = $presensi->sum('Total');
+    
+        return [
+            'presensi' => $presensi,
+            'totalGajiKaryawan' => $totalGajiKaryawan
+        ];
     }
     
-
-
-
     public function laporanKeuangan($bulan, $year)
     {
         $penjualan = model_pesanan::select(
             DB::raw('COALESCE(SUM(pesanan.Total), 0) as TotalPenjualan'),
             DB::raw('COALESCE(SUM(pesanan.Tip), 0) as TotalTip')
         )
-            ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
-            ->whereYear('pesanan.Tanggal_Pesan', $year)
-            ->where('pesanan.Status', 'Selesai')
-            ->first();
-
+        ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
+        ->whereYear('pesanan.Tanggal_Pesan', $year)
+        ->where('pesanan.Status', 'Selesai')
+        ->first();
+    
         $pengeluaranLain = model_pengeluaran_lain_lain::select(
             'Nama_Pengeluaran',
             'Harga'
         )
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $year)
-            ->get();
-
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', $year)
+        ->get();
+    
         $totalPengadaanBahanBaku = model_pengadaan_bahan_baku::select(DB::raw('COALESCE(SUM(Harga), 0) as TotalPengadaanBahanBaku'))
-            ->whereMonth('Tanggal_Pengadaan', $bulan)
-            ->whereYear('Tanggal_Pengadaan', $year)
-            ->first();
-
+        ->whereMonth('Tanggal_Pengadaan', $bulan)
+        ->whereYear('Tanggal_Pengadaan', $year)
+        ->first();
+    
         $totalPembayaranPenitip = DB::table('detail_transaksi')
-            ->join('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
-            ->join('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
-            ->join('pesanan', 'detail_transaksi.Pesanan_Id', '=', 'pesanan.Id')
-            ->select(
-                DB::raw('COALESCE(SUM((detail_transaksi.Total_Produk * produk.Harga) - (detail_transaksi.Total_Produk * produk.Harga * 0.2)), 0) AS TotalPembayaranPenitip')
-            )
-            ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
-            ->whereYear('pesanan.Tanggal_Pesan', $year)
-            ->where('pesanan.Status', 'Selesai')
-            ->first();
-
-        $totalGajiKaryawan = DB::table(DB::raw('(SELECT presensi.Karyawan_Id AS Id, karyawan.TotalGaji AS TotalGajiKaryawan
-                    FROM karyawan
-                    JOIN presensi ON karyawan.Id = presensi.Karyawan_Id
-                    WHERE MONTH(presensi.Tanggal) = ' . $bulan . '
-                    AND YEAR(presensi.Tanggal) = ' . $year . '
-                    GROUP BY presensi.Karyawan_Id, karyawan.TotalGaji) AS subquery'))
-            ->select(DB::raw('COALESCE(SUM(subquery.TotalGajiKaryawan), 0) AS TotalGajiKaryawan'))
-            ->first();
-
+        ->join('produk', 'detail_transaksi.Produk_Id', '=', 'produk.Id')
+        ->join('penitip', 'produk.Penitip_Id', '=', 'penitip.Id')
+        ->join('pesanan', 'detail_transaksi.Pesanan_Id', '=', 'pesanan.Id')
+        ->select(
+            DB::raw('COALESCE(SUM((detail_transaksi.Total_Produk * produk.Harga) - (detail_transaksi.Total_Produk * produk.Harga * 0.2)), 0) AS TotalPembayaranPenitip')
+        )
+        ->whereMonth('pesanan.Tanggal_Pesan', $bulan)
+        ->whereYear('pesanan.Tanggal_Pesan', $year)
+        ->where('pesanan.Status', 'Selesai')
+        ->first();
+    
+        // Panggil fungsi laporanPresensiKaryawan untuk mendapatkan total gaji karyawan
+        $laporanPresensi = $this->laporanPresensiKaryawan($bulan, $year);
+        $totalGajiKaryawan = $laporanPresensi['totalGajiKaryawan'];
+    
         return [
             'penjualan' => $penjualan,
             'pengeluaranLain' => $pengeluaranLain,
@@ -316,6 +327,7 @@ class service_laporan
             'totalGajiKaryawan' => $totalGajiKaryawan
         ];
     }
+    
 
 
 
