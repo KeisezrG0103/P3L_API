@@ -142,12 +142,12 @@ class service_laporan
     public function laporanPenjualanProdukV2($bulan, $year)
     {
         $pesanan = $this->laporanPenjualanProdukPerBulan($bulan, $year);
-
+    
         $penjualanProduk = [];
-
+    
         // Mengumpulkan semua ID pesanan untuk query eager loading
         $pesananIds = $pesanan->pluck('Id')->toArray();
-
+    
         // Mengambil semua produk dalam pesanan dengan eager loading
         $produkDalamPesanan = model_detail_transaksi::select(
             'detail_transaksi.Total_Produk as Kuantitas',
@@ -158,29 +158,39 @@ class service_laporan
             ->whereIn('detail_transaksi.Pesanan_Id', $pesananIds)
             ->where('produk.Penitip_Id', null)
             ->get();
-
+    
         // Membuat dictionary untuk harga hampers
         $hampersIds = $produkDalamPesanan->pluck('Hampers_Id')->toArray();
         $hargaHampers = $this->getHampers($hampersIds)->keyBy('Id');
-
+    
         // Membuat dictionary untuk harga produk
         $produkIds = $produkDalamPesanan->pluck('Produk_Id')->toArray();
         $hargaProduk = $this->getHargaProduk($produkIds)->keyBy('Id');
-
+    
         // Memproses produk dalam pesanan
         foreach ($produkDalamPesanan as $produk) {
-            $harga = $produk->Hampers_Id ? $hargaHampers[$produk->Hampers_Id]->Harga : $hargaProduk[$produk->Produk_Id]->Harga;
-
+            if ($produk->Hampers_Id && isset($hargaHampers[$produk->Hampers_Id])) {
+                $harga = $hargaHampers[$produk->Hampers_Id]->Harga;
+                $namaProduk = $hargaHampers[$produk->Hampers_Id]->Nama_Hampers;
+            } elseif ($produk->Produk_Id && isset($hargaProduk[$produk->Produk_Id])) {
+                $harga = $hargaProduk[$produk->Produk_Id]->Harga;
+                $namaProduk = $hargaProduk[$produk->Produk_Id]->Nama;
+            } else {
+                // Handle case where neither Hampers_Id nor Produk_Id exist in their respective dictionaries
+                continue; // Skip this product if its price or name can't be found
+            }
+    
             $penjualanProduk[] = (object)[
-                'Nama_Produk' => $produk->Hampers_Id ? $hargaHampers[$produk->Hampers_Id]->Nama_Hampers : $hargaProduk[$produk->Produk_Id]->Nama,
+                'Nama_Produk' => $namaProduk,
                 'Kuantitas' => $produk->Kuantitas,
                 'Harga' => $harga,
                 'Total' => $harga * $produk->Kuantitas
             ];
         }
-
+    
         return $penjualanProduk;
     }
+    
 
 
 
@@ -226,22 +236,31 @@ class service_laporan
 
     public function laporanPresensiKaryawan($bulan, $year)
     {
+        // Langkah pertama: Dapatkan data dasar
         $presensi = model_karyawan::select(
             'karyawan.Nama',
-            DB::raw('karyawan.TotalGaji - karyawan.Bonus as Honor_Harian'),
+            'karyawan.TotalGaji',
             'karyawan.Bonus',
-            'karyawan.TotalGaji as Total',
             DB::raw('SUM(CASE WHEN presensi.Status = "Masuk" THEN 1 ELSE 0 END) as Jumlah_Hadir'),
             DB::raw('SUM(CASE WHEN presensi.Status != "Masuk" THEN 1 ELSE 0 END) as Jumlah_Bolos')
         )
-            ->join('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
-            ->whereMonth('presensi.Tanggal', $bulan)
-            ->whereYear('presensi.Tanggal', $year)
-            ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
-            ->get();
-
+        ->join('presensi', 'karyawan.Id', '=', 'presensi.Karyawan_Id')
+        ->whereMonth('presensi.Tanggal', $bulan)
+        ->whereYear('presensi.Tanggal', $year)
+        ->groupBy('karyawan.Nama', 'karyawan.TotalGaji', 'karyawan.Bonus')
+        ->get();
+    
+        // Langkah kedua: Hitung Honor Harian dan Total
+        $presensi->transform(function ($item, $key) {
+            $item->Honor_Harian = ($item->TotalGaji - $item->Bonus) / ($item->Jumlah_Hadir > 0 ? $item->Jumlah_Hadir : 1);
+            $item->Total = $item->Honor_Harian + $item->Bonus;
+            return $item;
+        });
+    
         return $presensi;
     }
+    
+
 
 
     public function laporanKeuangan($bulan, $year)
